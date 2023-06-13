@@ -9,6 +9,9 @@ class CreateUser(schemas.BaseUserCreate):
     region: str
     is_staff: bool
 
+    class Config:
+        orm_mode = True
+
 
 class ReadUser(schemas.BaseUserCreate):
     name: str
@@ -17,3 +20,6 @@ class ReadUser(schemas.BaseUserCreate):
     country: str
     region: str
     is_staff: bool
+
+    class Config:
+        orm_mode = True
