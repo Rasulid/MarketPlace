@@ -1,7 +1,8 @@
 from fastapi import Depends, HTTPException, status, APIRouter
-from api.models.user_model import User_Model,Base
-from api.core.config import SECRET_KEY, AlGORITHM 
-from api.schemas.users_schemas import CreateUser
+from starlette.responses import JSONResponse
+
+from api.models.user_model import Base
+from api.core.config import SECRET_KEY, AlGORITHM
 from typing import Optional
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
@@ -9,6 +10,10 @@ from api.db.DataBasse import engine, SessionLocal
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta, datetime
 from jose import jwt, JWTError
+from jose.exceptions import ExpiredSignatureError
+
+from api.models.admin_model import Admin_Model
+from api.schemas.admin_schema import Admin_Schema
 
 SECRET_KEY = SECRET_KEY
 ALGORITHM = AlGORITHM
@@ -47,8 +52,11 @@ def verify_password(plain_password, hashed_password):
     return bcrypt_context.verify(plain_password, hashed_password)
 
 
-def authenticate_user(user: str, password: str, db):
-    user = db.query(User_Model).filter(User_Model.email == user).first()
+def authenticate_user(gmail: str, password: str, db):
+    user = db.query(Admin_Model).filter(Admin_Model.gmail == gmail).first()
+
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user is not valid")
 
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user is not valid")
@@ -84,93 +92,74 @@ def create_refresh_token(
 
 
 async def get_current_admin(token: str = Depends(oauth2_bearer),
-                           db: Session = Depends(get_db)):
-    pyload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+                            db: Session = Depends(get_db)):
+    try:
+        pyload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Update token")
 
-    email: str = pyload.get("username")
+    gmail: str = pyload.get("username")
     user_id: int = pyload.get("id")
 
-    res = db.query(User_Model).filter(User_Model.email == email).first()
+    res = db.query(Admin_Model).filter(Admin_Model.gmail == gmail).first()
 
     if res is None:
         raise for_user_exception()
 
     is_super = res.is_superuser
 
-    if is_super == False:
-        raise for_user_exception()
-
-    if email is None or user_id is None:
-        raise get_user_exceptions()
-
-    return {"sub": email, "user_id": user_id}
-
-
-async def get_current_user(token: str = Depends(oauth2_bearer),
-                           db: Session = Depends(get_db)):
-    pyload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-
-    email: str = pyload.get("username")
-    user_id: int = pyload.get("id")
-
-    res = db.query(User_Model).filter(User_Model.email == email).first()
-
-    if res is None:
-        raise for_user_exception()
-
-    # is_super = res.is_superuser
-    #
     # if is_super == False:
     #     raise for_user_exception()
 
-    if email is None or user_id is None:
+    if gmail is None or user_id is None:
         raise get_user_exceptions()
 
-    return {"sub": email, "user_id": user_id}
+    return {"sub": gmail, "user_id": user_id}
 
 
-
-@router.post("/create_admin")
-async def create_admin(admin: CreateUser,
-                       db: Session = Depends(get_db),
-                       login: dict = Depends(get_current_admin)):
-
-    if login is None:
-        return get_user_exceptions()
-
-    res = []
-    admin_model = User_Model()
-    admin_model.name = admin.name
-    admin_model.email = admin.email
-    admin_model.age = admin.age
-    admin_model.is_superuser = admin.is_superuser
-    admin_model.password = admin.password
-    admin_model.is_verified = admin.is_verified
-    admin_model.is_active = admin.is_active
-    admin_model.is_staff = admin.is_staff
-    admin_model.phone_number = admin.phone_number
-    admin_model.country = admin.country
-    admin_model.region = admin.region
-    admin_model.is_user = False
-
-    if admin_model:
-        user_name = db.query(User_Model).all()
-        for x in user_name:
-            if admin_model.email == x.email or admin_model.email == x.email:
-                raise HTTPException(status_code=status.HTTP_409_CONFLICT,
-                                    detail={'msg': f"{admin_model.email} user is already exists"})
-    hash_password = password_hash(admin.password)
-
-    admin_model.password = hash_password
-    return_user_model = admin_model
-
-    get_refresh_token = create_refresh_token(admin_model.email, admin_model.id)
-    get_access_token = create_access_token(admin_model.email, admin_model.id)
-
-    db.add(admin_model)
-    db.commit()
-    res.append(return_user_model)
-    return "success"
+# @router.post("/create_admin")
+# async def create_admin(admin: Admin_Schema,
+#                        db: Session = Depends(get_db),
+#                        # login: dict = Depends(get_current_admin)
+#                        ):
+#     #
+#     # if login is None:
+#     #     return get_user_exceptions()
+#
+#     res = []
+#     admin_model = Admin_Model()
+#     admin_model.name = admin.name
+#     admin_model.age = admin.age
+#     admin_model.created_at = admin.created_at
+#     admin_model.phone_number = admin.phone_number
+#     admin_model.gmail = admin.gmail
+#     admin_model.password = admin.password
+#     admin_model.country = admin.country
+#     admin_model.region = admin.region
+#     admin_model.is_active = admin.is_active
+#     admin_model.is_staff = admin.is_staff
+#     admin_model.is_superuser = admin.is_superuser
+#     admin_model.is_verified = admin.is_verified
+#
+#     if admin_model:
+#         user_name = db.query(Admin_Model).all()
+#         for x in user_name:
+#             if admin_model.gmail == x.gmail:
+#                 raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+#                                     detail={'msg': f"{admin_model.gmail} user is already exists"})
+#     hash_password = password_hash(admin.password)
+#
+#     admin_model.password = hash_password
+#     return_user_model = admin_model
+#
+#     get_refresh_token = create_refresh_token(admin_model.gmail, admin_model.id)
+#     get_access_token = create_access_token(admin_model.gmail, admin_model.id)
+#
+#     db.add(admin_model)
+#     db.commit()
+#     return JSONResponse(
+#         status_code=status.HTTP_201_CREATED,
+#         content={"message": f"admin {admin_model.gmail} is created"})
 
 
 @router.post("/token")
@@ -187,8 +176,9 @@ async def login_for_access_token(
         raise HTTPException(status_code=401, detail="Invalid token")
 
     token_expires = timedelta(minutes=20)
-    token = create_access_token(user.email, user.id, express_delta=token_expires)
-    get_refresh_token = create_refresh_token(user.email, user.id)
+
+    token = create_access_token(user.gmail, user.id, express_delta=token_expires)
+    get_refresh_token = create_refresh_token(user.gmail, user.id)
 
     return {"access_token": token,
             "refresh_token": get_refresh_token}
@@ -206,16 +196,6 @@ async def refresh_token(refresh_token: str):
 
     return {"access_token": new_access_token}
 
-
-@router.get("/users")
-async def user_list(db: Session = Depends(get_db),
-                    user: dict = Depends(get_current_admin)):
-    if user is None:
-        raise get_user_exceptions()
-
-
-    model_ = db.query(User_Model).all()
-    return model_
 
 
 # Exceptions

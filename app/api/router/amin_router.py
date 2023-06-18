@@ -1,11 +1,12 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 
 from api.db.session import get_db
-from api.auth.admin_auth import password_hash
+from api.auth.admin_auth import password_hash, get_current_admin, get_user_exceptions
 from api.schemas.admin_schema import Admin_Schema
 from api.models.admin_model import Admin_Model
 
@@ -15,7 +16,8 @@ router = APIRouter(tags=["Admin"],
 
 @router.post("/registr")
 async def register(admin: Admin_Schema,
-                   db: Session = Depends(get_db)):
+                   db: Session = Depends(get_db),
+                   login: dict = Depends(get_current_admin)):
     admin_model = Admin_Model()
     admin_model.name = admin.name
     admin_model.age = admin.age
@@ -48,8 +50,10 @@ async def register(admin: Admin_Schema,
 
 
 @router.put("/update")
-async def update_admin(id: int, admin: Admin_Schema,
-                       db: Session = Depends(get_db)):
+async def update_admin(admin: Admin_Schema,
+                       db: Session = Depends(get_db),
+                       login: dict = Depends(get_current_admin)):
+    id = login.get("user_id")
     admin_model = db.query(Admin_Model) \
         .filter(Admin_Model.id == id).first()
 
@@ -71,8 +75,11 @@ async def update_admin(id: int, admin: Admin_Schema,
     admin_model.is_superuser = admin.is_superuser
     admin_model.is_verified = admin.is_verified
 
-    check_admin = db.query(Admin_Model).filter(Admin_Model.gmail == admin.gmail).first()
+    check_admin = db.query(Admin_Model).filter(Admin_Model.gmail == login.get("sub")).first()
+
     if check_admin.id == admin_model.id:
+        hash_password = password_hash(admin.password)
+        admin_model.password = hash_password
         db.add(admin_model)
         db.commit()
 
@@ -83,9 +90,21 @@ async def update_admin(id: int, admin: Admin_Schema,
                         content={"message": f"{admin_model.gmail} is already exists"})
 
 
+@router.get("/admins-list")
+async def user_list(db: Session = Depends(get_db),
+                    user: dict = Depends(get_current_admin)):
+    if user is None:
+        raise get_user_exceptions()
+
+    model_ = db.query(Admin_Model).all()
+    return model_
+
+
 @router.delete("/delete")
-async def delete_admin(id: int,
-                       db: Session = Depends(get_db)):
+async def delete_admin(db: Session = Depends(get_db),
+                       login: dict = Depends(get_current_admin)):
+    id = login.get("user_id")
+
     db_query = db.query(Admin_Model) \
         .filter(Admin_Model.id == id).first()
 
@@ -96,5 +115,4 @@ async def delete_admin(id: int,
 
     delete = db.query(Admin_Model).filter(Admin_Model.id == id).delete()
     db.commit()
-    return JSONResponse(status_code=status.HTTP_204_NO_CONTENT,
-                        content={"message": f"delete {db_query.gmail} successfully"})
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
