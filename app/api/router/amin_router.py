@@ -93,7 +93,7 @@ async def update_admin(admin: Admin_Schema,
                         content={"message": f"{admin_model.gmail} is already exists"})
 
 
-@router.get("/admins-list")
+@router.get("/admins-list", response_model=List[Admin_Read_Schema])
 async def user_list(db: Session = Depends(get_db),
                     user: dict = Depends(get_current_admin)):
     if user is None:
