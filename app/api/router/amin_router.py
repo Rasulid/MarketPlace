@@ -7,45 +7,17 @@ from starlette.responses import JSONResponse
 from api.models.user_model import User_Model
 from api.db.DataBasse import SessionLocal
 from api.schemas.users_schemas import CreateUser, ReadUser
-# from api.db.session import get_db
+from api.db.session import get_db
 
 router = APIRouter(tags=["Admin"],
                    prefix="/api/admin")
 
-def get_db():
-    try:
-        db = SessionLocal()
-        yield db
-    finally:
-        db.close()
-
-@router.post('/create')
-async def create_admin(admin: CreateUser,
-                       db: Session = Depends(get_db)):
-    admin_model = User_Model()
-
-    admin_model.name = admin.name
-    admin_model.email = admin.email
-    admin_model.age = admin.age
-    admin_model.is_superuser = admin.is_superuser
-    admin_model.password = admin.password
-    admin_model.is_verified = admin.is_verified
-    admin_model.is_active = admin.is_active
-    admin_model.is_staff = admin.is_staff
-    admin_model.phone_number = admin.phone_number
-    admin_model.country = admin.country
-    admin_model.region = admin.region
-
-    db.add(admin_model)
-    db.commit()
-
-    return admin_model
-
-
-@router.get('/list', response_model=List[ReadUser])
-async def list_admin(db: Session = Depends(get_db)):
-    res = db.query(User_Model).all()
-    return res
+# def get_db():
+#     try:
+#         db = SessionLocal()
+#         yield db
+#     finally:
+#         db.close()
 
 
 @router.put("/update", response_model=ReadUser)
@@ -71,6 +43,7 @@ async def update_admin(id: int, admin: CreateUser,
     admin_model.phone_number = admin.phone_number
     admin_model.country = admin.country
     admin_model.region = admin.region
+    admin_model.is_user = False
 
     db.add(admin_model)
     db.commit()

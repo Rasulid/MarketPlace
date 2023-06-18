@@ -9,7 +9,7 @@ from sqlalchemy import pool
 print(9, sys.path)
 
 from api.models.user_model import Base
-from api.models import *
+from api.models import user_model, admin_model, product_model, order_model
 from alembic import context
 
 # this is the Alembic Config object, which provides
