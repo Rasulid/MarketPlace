@@ -6,18 +6,21 @@ from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 
 from api.db.session import get_db
-from api.auth.admin_auth import password_hash, get_current_admin, get_user_exceptions
-from api.schemas.admin_schema import Admin_Schema
+from api.auth.admin_auth import password_hash
+from api.auth.login import get_current_admin, get_user_exceptions
+from api.schemas.admin_schema import Admin_Schema, Admin_Read_Schema
 from api.models.admin_model import Admin_Model
 
 router = APIRouter(tags=["Admin"],
                    prefix="/api/admin")
 
 
-@router.post("/registr")
+@router.post("/registr", response_model=List[Admin_Read_Schema])
 async def register(admin: Admin_Schema,
                    db: Session = Depends(get_db),
                    login: dict = Depends(get_current_admin)):
+    res = []
+
     admin_model = Admin_Model()
     admin_model.name = admin.name
     admin_model.age = admin.age
@@ -41,12 +44,12 @@ async def register(admin: Admin_Schema,
     hash_password = password_hash(admin.password)
     admin_model.password = hash_password
 
+    res.append(admin_model)
+
     db.add(admin_model)
     db.commit()
 
-    return JSONResponse(
-        status_code=status.HTTP_201_CREATED,
-        content={"message": f"admin {admin_model.gmail} is created"})
+    return res
 
 
 @router.put("/update")
