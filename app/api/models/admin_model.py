@@ -10,7 +10,7 @@ class Admin_Model(Base):
     age = Column(Integer, nullable=False)
     created_at = Column(DateTime, default=func.utcnow())
     phone_number = Column(String, nullable=False)
-    gmail = Column(String, unique=True, nullable=False)
+    gmail = Column(String, nullable=False)
     password = Column(String, nullable=False)
     country = Column(String, default="UZB")
     region = Column(String, nullable=False)
