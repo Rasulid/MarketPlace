@@ -3,11 +3,12 @@ import shutil
 import uuid
 from typing import List
 
-from fastapi import APIRouter, Depends, status, UploadFile, File
-from api.schemas.product_schema import Product_Schema, Product_Schema_Read
+from fastapi import APIRouter, Depends, status, UploadFile, File, Body
+from api.schemas.product_schema import Product_Schema, Product_Schema_Read, Product_Image_Schema, \
+    AStudentWorkCreateSchema
 from sqlalchemy.orm import Session
 from api.db.session import get_db
-from api.models.product_model import Product_Model
+from api.models.product_model import Product_Model, Product_Image
 from api.auth.login import get_current_staff, get_current_admin
 from api.auth.admin_auth import get_user_exceptions
 
@@ -17,38 +18,47 @@ router = APIRouter(
 )
 
 
-@router.post("/create", response_model=List[Product_Schema_Read])
+@router.post("/create")
 async def create_product(
-        product: Product_Schema,
+        product: AStudentWorkCreateSchema,
         db: Session = Depends(get_db),
-        files: List[UploadFile] = File(...)
+        file: List[UploadFile] = File(),
+        login: dict = Depends(get_current_staff)
 ):
+
+    if login is None:
+        return get_user_exceptions()
+    
+    owner_id = login.get("user_id")
     res = []
+    upload_image = await upload_img(file)
+
     result = []
 
     product_model = Product_Model()
     product_model.title = product.title
     product_model.desc = product.desc
     product_model.category = product.category
-    product_model.owner = 18
+    product_model.owner = owner_id
     product_model.created_at = product.created_at
     product_model.count = product.count
     product_model.procent_sale = product.procent_sale
     product_model.promocode = product.promocode
     product_model.colour = product.colour
 
+    res.append(product_model)
     db.add(product_model)
     db.commit()
 
-    res.append(product_model)
+    for x in upload_image:
+        image_model = Product_Image()
+        image_model.file_path = x.file_path
+        image_model.file_name = x.file_name
+        image_model.product_id = product_model.id
+        res.append(image_model)
 
-    for image in files:
-        with open(f'static/image/{image.filename}', "wb") as buffer:
-            shutil.copyfileobj(image.file, buffer)
-            result.append(f'static/image/{image.filename}')
-
-    product_model.photos = result
-
+    res.append(result)
+    db.add_all(result)
     db.commit()
 
     return res
@@ -62,11 +72,32 @@ async def product_list(db: Session = Depends(get_db),
     return query
 
 
-async def Upload_File(file: List[UploadFile] = File(...)):
-    result = []
-    for image in file:
-        with open(f'static/image/{image.filename}', "wb") as buffer:
-            shutil.copyfileobj(image.file, buffer)
-            result.append(image.filename)
+async def upload_img(file: List[UploadFile] = File(...)):
+    image_list = []
+    for img in file:
+        img.filename = f"{uuid.uuid4()}.jpg"
+        with open(f"static/image/{img.filename}", "wb") as buffer:
+            shutil.copyfileobj(img.file, buffer)
+            append_for_db = Product_Image_Schema(file_name=img.filename, file_path=f"static/image")
+        image_list.append(append_for_db)
+    return image_list
 
-    return {"filename": result}
+
+@router.post("/img/")
+async def post_img(test_id: int = Body(...),
+                   db: Session = Depends(get_db),
+                   file: List[UploadFile] = File(...)):
+    upload_image = await upload_img(file)
+
+    result = []
+    for x in upload_image:
+        image_model = Product_Image()
+        image_model.file_path = x.file_path
+        image_model.file_name = x.file_name
+        image_model.product_id = test_id
+        result.append(image_model)
+
+    db.add_all(result)
+    db.commit()
+
+    return "Success"
