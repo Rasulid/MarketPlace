@@ -28,7 +28,7 @@ async def create_product(
 
     if login is None:
         return get_user_exceptions()
-    
+
     owner_id = login.get("user_id")
     res = []
     upload_image = await upload_img(file)
