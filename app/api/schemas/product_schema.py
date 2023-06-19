@@ -1,14 +1,28 @@
 import json
 from datetime import datetime
-from typing import List
-
-from pydantic import BaseModel, Field
+from typing import List, Optional
+from pydantic import BaseModel
 
 
 class Product_Image_Schema(BaseModel):
     file_name: str
     file_path: str
 
+
+class Product_Schema_Read(BaseModel):
+    title: str
+    desc: str
+    category: str
+    owner: int
+    created_at: datetime
+    count: int
+    procent_sale: Optional[int]
+    promocode: Optional[str]
+    colour: str
+    images: List[Product_Image_Schema]
+
+    class Config:
+        orm_mode = True
 
 
 class Product_Schema(BaseModel):
@@ -17,25 +31,15 @@ class Product_Schema(BaseModel):
     category: str
     created_at: datetime
     count: int
-    procent_sale: int
-    promocode: str
+    procent_sale: Optional[int]
+    promocode: Optional[str]
     colour: str
 
 
-class Product_Schema_Read(BaseModel):
-    title: str = Field(...)
-    desc: str = Field(...)
-    category: str = Field(...)
-    images: List[Product_Image_Schema] = Field(...)
-    owner: int = Field(...)
-    created_at: datetime = Field(...)
-    count: int = Field(...)
-    procent_sale: int = Field(...)
-    promocode: str = Field(...)
-    colour: str = Field(...)
-
     class Config:
         orm_mode = True
+
+
 class AStudentWorkCreateSchema(Product_Schema):
     @classmethod
     def __get_validators__(cls):

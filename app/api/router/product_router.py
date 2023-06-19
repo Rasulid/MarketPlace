@@ -4,9 +4,9 @@ import uuid
 from typing import List
 
 from fastapi import APIRouter, Depends, status, UploadFile, File, Body
-from api.schemas.product_schema import Product_Schema, Product_Schema_Read, Product_Image_Schema, \
+from api.schemas.product_schema import Product_Schema, Product_Image_Schema, \
     AStudentWorkCreateSchema
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from api.db.session import get_db
 from api.models.product_model import Product_Model, Product_Image
 from api.auth.login import get_current_staff, get_current_admin
@@ -18,6 +18,17 @@ router = APIRouter(
 )
 
 
+async def upload_img(file: List[UploadFile] = File(...)):
+    image_list = []
+    for img in file:
+        img.filename = f"{uuid.uuid4()}.jpg"
+        with open(f"static/image/{img.filename}", "wb") as buffer:
+            shutil.copyfileobj(img.file, buffer)
+            append_for_db = Product_Image_Schema(file_name=img.filename, file_path=f"static/image")
+        image_list.append(append_for_db)
+    return image_list
+
+
 @router.post("/create")
 async def create_product(
         product: AStudentWorkCreateSchema,
@@ -25,7 +36,6 @@ async def create_product(
         file: List[UploadFile] = File(),
         login: dict = Depends(get_current_staff)
 ):
-
     if login is None:
         return get_user_exceptions()
 
@@ -55,6 +65,8 @@ async def create_product(
         image_model.file_path = x.file_path
         image_model.file_name = x.file_name
         image_model.product_id = product_model.id
+
+        print(image_model.product_id)
         res.append(image_model)
 
     res.append(result)
@@ -64,40 +76,19 @@ async def create_product(
     return res
 
 
-@router.get("/list-product", response_model=List[Product_Schema_Read])
+@router.get("/list-product")
 async def product_list(db: Session = Depends(get_db),
-                       login: dict = Depends(get_current_staff)):
-    query = db.query(Product_Model).all()
+                       login: dict = Depends(get_current_staff)
+                       ):
+    if login is None:
+        return get_user_exceptions()
+
+    query = (
+        db.query(Product_Model)
+        .join(Product_Image, Product_Model.id == Product_Image.product_id)
+        .options(joinedload(Product_Model.images))
+        .all()
+    )
+    print(query)
 
     return query
-
-
-async def upload_img(file: List[UploadFile] = File(...)):
-    image_list = []
-    for img in file:
-        img.filename = f"{uuid.uuid4()}.jpg"
-        with open(f"static/image/{img.filename}", "wb") as buffer:
-            shutil.copyfileobj(img.file, buffer)
-            append_for_db = Product_Image_Schema(file_name=img.filename, file_path=f"static/image")
-        image_list.append(append_for_db)
-    return image_list
-
-
-@router.post("/img/")
-async def post_img(test_id: int = Body(...),
-                   db: Session = Depends(get_db),
-                   file: List[UploadFile] = File(...)):
-    upload_image = await upload_img(file)
-
-    result = []
-    for x in upload_image:
-        image_model = Product_Image()
-        image_model.file_path = x.file_path
-        image_model.file_name = x.file_name
-        image_model.product_id = test_id
-        result.append(image_model)
-
-    db.add_all(result)
-    db.commit()
-
-    return "Success"
