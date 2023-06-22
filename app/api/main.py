@@ -8,7 +8,7 @@ app = FastAPI(title="Admin",
               docs_url="/api/admin")
 
 app.include_router(admin_router)
-# app.include_router(users_router)
+app.include_router(users_router)
 app.include_router(admin_auth_router)
 app.include_router(product_router)
 

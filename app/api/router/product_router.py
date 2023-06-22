@@ -138,12 +138,12 @@ async def update_product(
         product: AStudentWorkCreateSchema,
         db: Session = Depends(get_db),
         file: List[UploadFile] = File(),
-        # login: dict = Depends(get_current_staff)
+        login: dict = Depends(get_current_staff)
 ):
-    # if login is None:
-    #     return get_user_exceptions()
+    if login is None:
+        return get_user_exceptions()
 
-    # owner_id = login.get("user_id")
+    owner_id = login.get("user_id")
     res = []
     upload_image = await upload_img(file)
 
@@ -164,8 +164,8 @@ async def update_product(
         product_model.promocode = product.promocode
         product_model.colour = product.colour
 
-        # db.add(product_model)
-        # db.commit()
+        db.add(product_model)
+        db.commit()
         res.append(product_model)
 
         file_path = f"static/image"
@@ -177,7 +177,10 @@ async def update_product(
                 if os.path.exists(file_name):
                     os.remove(file_name)
                 else:
-                    return "File not found"
+                    return JSONResponse(
+                        status_code=status.HTTP_404_NOT_FOUND,
+                        content="Photo not Found"
+                    )
 
         for x in upload_image:
             image_model = Product_Image()
@@ -187,8 +190,8 @@ async def update_product(
 
             result.append(image_model)
 
-        # db.add_all(result)
-        # db.commit()
+        db.add_all(result)
+        db.commit()
 
         images_data = []
         for image in result:
@@ -225,8 +228,10 @@ async def delete_product(id: int,
         .first()
 
     if chack is None:
-        return HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND)
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content="Product not found"
+        )
 
     # Удаление фотографий
     file_path = f"static/image"
@@ -250,3 +255,47 @@ async def delete_product(id: int,
         status_code=status.HTTP_204_NO_CONTENT,
         content="Product deleted successfully"
     )
+
+
+@router.get("/product/{id}/", response_model=List[Product_Schema_Read_V2])
+async def product_list(id: int,
+                       db: Session = Depends(get_db),
+                       login: dict = Depends(get_current_staff)):
+    if login is None:
+        return get_user_exceptions()
+
+    query = (
+        db.query(Product_Model)
+        .filter(Product_Model.id == id)
+        .join(Product_Image, Product_Model.id == Product_Image.product_id)
+        .options(joinedload(Product_Model.images))
+        .first()
+    )
+
+    if query is None:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content=f"product {id} not Found"
+        )
+
+    products = []
+
+    images = [
+        Product_Image_Schema(file_name=image.file_name, file_path=image.file_path)
+        for image in query.images]
+
+    product_data = Product_Schema_Read_V2(
+        title=query.title,
+        desc=query.desc,
+        category=query.category,
+        owner=query.owner,
+        created_at=query.created_at,
+        count=query.count,
+        procent_sale=query.procent_sale,
+        promocode=query.promocode,
+        colour=query.colour,
+        images=images
+    )
+    products.append(product_data)
+
+    return products
