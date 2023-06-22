@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import Integer, String, Boolean, Column, DateTime, func
-from api.db.DataBasse import Base
+from api.db.DataBasse import Base, engine
 
 
 class User_Model(Base):
@@ -13,11 +13,16 @@ class User_Model(Base):
     phone_number = Column(String, nullable=False)
     country = Column(String, default="UZB", nullable=False)
     region = Column(String, nullable=False)
-    email = Column(String, unique=True, nullable=False)
+    gmail = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
     created_at = Column(DateTime, default=func.utcnow())
     is_active = Column(Boolean, default=True)
-    is_staff = Column(Boolean, default=False)
-    is_superuser = Column(Boolean, default=False)
     is_verified = Column(Boolean, default=False)
-    is_user = Column(Boolean, default=True)
+    update_at = Column(DateTime, default=func.utcnow())
+
+
+
+Base.metadata.remove(User_Model.__table__)
+
+# Создать определение таблицы 'users' заново
+Base.metadata.create_all(engine)

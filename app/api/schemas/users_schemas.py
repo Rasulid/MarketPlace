@@ -1,27 +1,21 @@
-from fastapi_users import schemas
+from datetime import datetime
+
+from pydantic import BaseModel
 
 
-class CreateUser(schemas.BaseUserCreate):
+class User_Schema(BaseModel):
     name: str
+    l_name: str
     age: int
     phone_number: str
-    country: str
+    country: str = "UZB"
     region: str
-    is_staff: bool
-    is_user: bool
-
-    class Config:
-        orm_mode = True
-
-
-class ReadUser(schemas.BaseUserCreate):
-    name: str
-    age: int
-    phone_number: str
-    country: str
-    region: str
-    is_staff: bool
-    is_user: bool
+    gmail: str
+    password: str
+    created_at: datetime
+    is_active: bool = True
+    is_verified: bool = False
+    update_at: datetime
 
     class Config:
         orm_mode = True
