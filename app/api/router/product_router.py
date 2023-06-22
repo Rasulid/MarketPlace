@@ -3,19 +3,21 @@ import uuid
 from typing import List
 
 from fastapi import APIRouter, Depends, status, UploadFile, File
-from api.schemas.product_schema import  Product_Image_Schema, \
-    AStudentWorkCreateSchema,  Product_Schema_Read_V2
+from fastapi.exceptions import HTTPException
+from fastapi.responses import JSONResponse
+
+from api.schemas.product_schema import Product_Image_Schema, \
+    AStudentWorkCreateSchema, Product_Schema_Read_V2
 from sqlalchemy.orm import Session, joinedload
 from api.db.session import get_db
 from api.models.product_model import Product_Model, Product_Image
-from api.auth.login import get_current_staff, get_current_admin
+from api.auth.login import get_current_staff
 from api.auth.admin_auth import get_user_exceptions
 
 router = APIRouter(
     tags=["Product"],
     prefix="/api/product"
 )
-
 
 
 async def upload_img(file: List[UploadFile] = File(...)):
@@ -27,6 +29,7 @@ async def upload_img(file: List[UploadFile] = File(...)):
             append_for_db = Product_Image_Schema(file_name=img.filename, file_path=f"static/image")
         image_list.append(append_for_db)
     return image_list
+
 
 @router.post("/create", response_model=Product_Schema_Read_V2)
 async def create_product(
@@ -91,6 +94,7 @@ async def create_product(
 
     return product_data
 
+
 @router.get("/list-product", response_model=List[Product_Schema_Read_V2])
 async def product_list(db: Session = Depends(get_db),
                        login: dict = Depends(get_current_staff)):
@@ -107,8 +111,7 @@ async def product_list(db: Session = Depends(get_db),
     for product in query:
         images = [
             Product_Image_Schema(file_name=image.file_name, file_path=image.file_path)
-                  for image in product.images]
-
+            for image in product.images]
 
         product_data = Product_Schema_Read_V2(
             title=product.title,
@@ -125,3 +128,29 @@ async def product_list(db: Session = Depends(get_db),
         products.append(product_data)
 
     return products
+
+
+@router.delete("/delete")
+async def delete_product(id: int,
+                         db: Session = Depends(get_db),
+                         login: dict = Depends(get_current_staff)):
+    if login is None:
+        return get_user_exceptions()
+
+    chack = db.query(Product_Model)\
+        .filter(Product_Model.id == id)\
+        .first()
+
+    if chack is None:
+        return HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND)
+
+    query = db.query(Product_Model)\
+        .filter(Product_Model.id == id)\
+        .delete()
+
+    db.commit()
+    return JSONResponse(
+        status_code=status.HTTP_204_NO_CONTENT,
+        content="Product deleted successfully"
+    )
