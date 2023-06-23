@@ -25,7 +25,7 @@ async def list_users(id: int
     return query
 
 
-@router.get("/users-list", response_model=User_Schema)
+@router.get("/users-list", response_model=List[User_Schema])
 async def list_users(db: Session = Depends(get_db),
                      login: dict = Depends(get_current_staff)):
     if login is None:
@@ -75,7 +75,7 @@ async def register(user: User_Schema,
 
 
 @router.put("/update")
-async def update_admin(user: User_Schema,
+async def update_user(user: User_Schema,
                        db: Session = Depends(get_db),
                        login: dict = Depends(get_current_user)):
     id = login.get("user_id")
@@ -115,3 +115,69 @@ async def update_admin(user: User_Schema,
 
     return JSONResponse(status_code=status.HTTP_409_CONFLICT,
                         content={"message": f"{user_model.gmail} is already exists"})
+
+
+@router.put("/update/{id}")
+async def update_user_by_id(user: User_Schema,
+                            id:int,
+                       db: Session = Depends(get_db),
+                       login: dict = Depends(get_current_staff)):
+
+    user_model = db.query(User_Model) \
+        .filter(User_Model.id == id).first()
+
+    if user_model is None:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={"message": "Admin not found"})
+
+    user_model.name = user.name
+    user_model.l_name = user.l_name
+    user_model.age = user.age
+    user_model.phone_number = user.phone_number
+    user_model.country = user.country
+    user_model.region = user.region
+    user_model.gmail = user.gmail
+    user_model.password = user.password
+    user_model.created_at = user.created_at
+    user_model.is_active = user.is_active
+    user_model.is_verified = user.is_verified
+    user_model.update_at = user.update_at
+    user_model.is_superuser = False
+    user_model.is_staff = False
+
+    check_admin = db.query(User_Model).filter(User_Model.gmail == user_model.gmail).first()
+
+    if check_admin.id == user_model.id:
+        hash_password = password_hash(user.password)
+        user_model.password = hash_password
+        db.add(user_model)
+        db.commit()
+
+        return JSONResponse(status_code=status.HTTP_200_OK,
+                            content={"message": f"Update admin {user_model.gmail} was successfully"})
+
+    return JSONResponse(status_code=status.HTTP_409_CONFLICT,
+                        content={"message": f"{user_model.gmail} is already exists"})
+
+
+
+@router.delete("/delete/{id}")
+async def delete_user(db: Session = Depends(get_db),
+                      login: dict = Depends(get_current_user)):
+    id = login.get("user_id")
+
+    query = db.query(User_Model).filter(User_Model.id == id).first()
+
+    if query is None:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={"message": "User not found"})
+
+    delete = db.query(User_Model).filter(User_Model.id == id).delete()
+
+    db.commit()
+
+    return delete
+
+

@@ -132,7 +132,7 @@ async def product_list(db: Session = Depends(get_db),
 
 
 
-@router.put("/update")
+@router.put("/update/{id}")
 async def update_product(
         id: int,
         product: AStudentWorkCreateSchema,
@@ -216,7 +216,7 @@ async def update_product(
     return query
 
 
-@router.delete("/delete")
+@router.delete("/delete/{id}")
 async def delete_product(id: int,
                          db: Session = Depends(get_db),
                          login: dict = Depends(get_current_staff)):
@@ -257,7 +257,7 @@ async def delete_product(id: int,
     )
 
 
-@router.get("/product/{id}/", response_model=List[Product_Schema_Read_V2])
+@router.get("/{id}/", response_model=List[Product_Schema_Read_V2])
 async def product_list(id: int,
                        db: Session = Depends(get_db),
                        login: dict = Depends(get_current_staff)):

@@ -103,10 +103,10 @@ async def user_list(db: Session = Depends(get_db),
     return model_
 
 
-@router.delete("/delete")
-async def delete_admin(db: Session = Depends(get_db),
+@router.delete("/delete/{id}")
+async def delete_admin(id: int,
+                        db: Session = Depends(get_db),
                        login: dict = Depends(get_current_admin)):
-    id = login.get("user_id")
 
     db_query = db.query(Admin_Model) \
         .filter(Admin_Model.id == id).first()
