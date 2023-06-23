@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException, status, APIRouter
 
-from api.models.user_model import Base
+from api.models.user_model import Base, User_Model
 from api.core.config import SECRET_KEY, AlGORITHM
 from typing import Optional
 from passlib.context import CryptContext
@@ -49,8 +49,11 @@ def verify_password(plain_password, hashed_password):
     return bcrypt_context.verify(plain_password, hashed_password)
 
 
-def authenticate_user(gmail: str, password: str, db):
+def authenticate_admin(gmail: str, password: str, db):
     user = db.query(Admin_Model).filter(Admin_Model.gmail == gmail).first()
+
+    if user is None:
+        user = db.query(User_Model).filter(User_Model.gmail == gmail).first()
 
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user is not valid")
@@ -91,10 +94,11 @@ def create_refresh_token(
 async def login_for_access_token(
         form_data: OAuth2PasswordRequestForm = Depends(),
         db: Session = Depends(get_db)
-):
-    try:
-        user = authenticate_user(form_data.username, form_data.password, db=db)
 
+):
+
+    try:
+        user = authenticate_admin(form_data.username, form_data.password, db=db)
         if not user:
             raise token_exception()
     except JWTError:

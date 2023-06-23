@@ -1,8 +1,8 @@
-"""add data
+"""add tables
 
-Revision ID: 4d7b4f0113ca
+Revision ID: 081afa4c875b
 Revises: 
-Create Date: 2023-06-22 23:19:30.264239
+Create Date: 2023-06-23 11:40:15.148013
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '4d7b4f0113ca'
+revision = '081afa4c875b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -47,6 +47,8 @@ def upgrade() -> None:
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.Column('is_verified', sa.Boolean(), nullable=True),
+    sa.Column('is_superuser', sa.Boolean(), nullable=True),
+    sa.Column('is_staff', sa.Boolean(), nullable=True),
     sa.Column('update_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('gmail')

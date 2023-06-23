@@ -5,11 +5,11 @@ from api.auth.admin_auth import router as admin_auth_router
 from api.router.product_router import router as product_router
 
 app = FastAPI(title="Admin",
-              docs_url="/api/admin")
+              docs_url="/api/admin/docs")
 
 app.include_router(admin_router)
-app.include_router(users_router)
+# app.include_router(users_router)
 app.include_router(admin_auth_router)
 app.include_router(product_router)
 
-
+app.mount("/api/users", users_router)

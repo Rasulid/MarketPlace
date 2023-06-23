@@ -18,11 +18,13 @@ class User_Model(Base):
     created_at = Column(DateTime, default=func.utcnow())
     is_active = Column(Boolean, default=True)
     is_verified = Column(Boolean, default=False)
+    is_superuser = Column(Boolean, default=False)
+    is_staff = Column(Boolean, default=False)
     update_at = Column(DateTime, default=func.utcnow())
 
 
 
-Base.metadata.remove(User_Model.__table__)
-
-# Создать определение таблицы 'users' заново
-Base.metadata.create_all(engine)
+# Base.metadata.remove(User_Model.__table__)
+#
+# # Создать определение таблицы 'users' заново
+# Base.metadata.create_all(engine)
