@@ -1,31 +1,31 @@
 
-from sqlalchemy import Integer, String, Boolean, Column, ForeignKey, DateTime, func
+from sqlalchemy import Integer, String, Boolean, Column, ForeignKey, DateTime, func, Float
 from sqlalchemy.orm import relationship
 
 from api.db.DataBasse import Base
 
 
-class Product_Model(Base):
-    __tablename__ = 'product'
+
+class Product(Base):
+    __tablename__ = 'products'
     id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False)
-    desc = Column(String, nullable=False)
+    description = Column(String, nullable=False)
     category = Column(String, nullable=False)
-    owner = Column(Integer, ForeignKey("admins.id", ondelete="CASCADE"))  # FK to Admin relationship one to many
+    owner_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"))
     created_at = Column(DateTime, default=func.utcnow())
     count = Column(Integer, nullable=False)
-    procent_sale = Column(Integer)
+    percent_sale = Column(Integer)
     promocode = Column(String)
-    colour = Column(String, nullable=False)
+    color = Column(String, nullable=False)
+    price = Column(Float, nullable=False)
+    images = relationship("ProductImage", back_populates="product")
 
-    images = relationship("Product_Image", back_populates="product")
 
-
-class Product_Image(Base):
-    __tablename__ = 'image'
+class ProductImage(Base):
+    __tablename__ = 'product_images'
     id = Column(Integer, primary_key=True)
     file_name = Column(String)
     file_path = Column(String)
-    product_id = Column(Integer, ForeignKey("product.id", ondelete="CASCADE"))
-
-    product = relationship("Product_Model", back_populates="images")
+    product_id = Column(Integer, ForeignKey('products.id', ondelete="CASCADE"))
+    product = relationship("Product", back_populates="images")
