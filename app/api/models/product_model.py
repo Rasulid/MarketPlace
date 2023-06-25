@@ -6,7 +6,7 @@ from api.db.DataBasse import Base
 
 
 
-class Product(Base):
+class Product_Model(Base):
     __tablename__ = 'products'
     id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False)
@@ -22,7 +22,7 @@ class Product(Base):
     images = relationship("ProductImage", back_populates="product")
 
 
-class ProductImage(Base):
+class Product_Image(Base):
     __tablename__ = 'product_images'
     id = Column(Integer, primary_key=True)
     file_name = Column(String)
