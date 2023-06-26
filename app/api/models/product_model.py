@@ -19,7 +19,7 @@ class Product_Model(Base):
     promocode = Column(String)
     color = Column(String, nullable=False)
     price = Column(Float, nullable=False)
-    images = relationship("ProductImage", back_populates="product")
+    images = relationship("Product_Image", back_populates="product")
 
 
 class Product_Image(Base):
@@ -28,4 +28,4 @@ class Product_Image(Base):
     file_name = Column(String)
     file_path = Column(String)
     product_id = Column(Integer, ForeignKey('products.id', ondelete="CASCADE"))
-    product = relationship("Product", back_populates="images")
+    product = relationship("Product_Model", back_populates="images")
