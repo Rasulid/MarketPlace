@@ -1,3 +1,5 @@
+from typing import List
+
 from pydantic import BaseModel
 from enum import Enum
 
@@ -20,15 +22,13 @@ class OrderedProductSchema(BaseModel):
 
 class OrderSchema(BaseModel):
     payment_method: PaymentMethod
-    total_price: int
     order_status: OrderStatus
-    user_id: int
-    # order_products: list[OrderedProductSchema]
+    order_products: List[OrderedProductSchema]
 
 
 class OrderSchemaRead(BaseModel):
     payment_method: PaymentMethod
-    total_price: int
+    total_price: float
     order_status: OrderStatus
     user_id: int
-    order_products: list[OrderedProductSchema]
+    order_products: List[OrderedProductSchema]

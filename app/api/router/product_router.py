@@ -50,7 +50,7 @@ async def create_product(
 
     product_model = ProductModel()
     product_model.title = product.title
-    product_model.desc = product.desc
+    product_model.description = product.description
     product_model.category = product.category
     product_model.owner = owner_id
     product_model.created_at = product.created_at
@@ -58,6 +58,7 @@ async def create_product(
     product_model.procent_sale = product.procent_sale
     product_model.promocode = product.promocode
     product_model.colour = product.colour
+    product_model.price = product.price
 
     db.add(product_model)
     db.commit()
@@ -82,7 +83,7 @@ async def create_product(
 
     product_data = ProductSchemaReadV2(
         title=product.title,
-        desc=product.desc,
+        description=product.description,
         category=product.category,
         images=images_data,
         owner=product_model.owner,
@@ -91,6 +92,7 @@ async def create_product(
         procent_sale=product_model.procent_sale,
         promocode=product_model.promocode,
         colour=product_model.colour,
+        price=product_model.price
     )
 
     return product_data
@@ -116,7 +118,7 @@ async def product_list(db: Session = Depends(get_db),
 
         product_data = ProductSchemaReadV2(
             title=product.title,
-            desc=product.desc,
+            description=product.description,
             category=product.category,
             owner=product.owner,
             created_at=product.created_at,
@@ -124,7 +126,8 @@ async def product_list(db: Session = Depends(get_db),
             procent_sale=product.procent_sale,
             promocode=product.promocode,
             colour=product.colour,
-            images=images
+            images=images,
+            price=product.price
         )
         products.append(product_data)
 
@@ -155,7 +158,7 @@ async def update_product(
 
         product_model = ProductModel()
         product_model.title = product.title
-        product_model.desc = product.desc
+        product_model.description = product.description
         product_model.category = product.category
         product_model.owner = 1
         product_model.created_at = product.created_at
@@ -163,6 +166,7 @@ async def update_product(
         product_model.procent_sale = product.procent_sale
         product_model.promocode = product.promocode
         product_model.colour = product.colour
+        product_model.price = product.price
 
         db.add(product_model)
         db.commit()
@@ -200,7 +204,7 @@ async def update_product(
 
         product_data = ProductSchemaReadV2(
             title=product.title,
-            desc=product.desc,
+            ription=product.ription,
             category=product.category,
             images=images_data,
             owner=product_model.owner,
@@ -209,6 +213,7 @@ async def update_product(
             procent_sale=product_model.procent_sale,
             promocode=product_model.promocode,
             colour=product_model.colour,
+            price=product_model.price
         )
         return product_data
 
@@ -285,7 +290,7 @@ async def product_list(id: int,
 
     product_data = ProductSchemaReadV2(
         title=query.title,
-        desc=query.desc,
+        description=query.description,
         category=query.category,
         owner=query.owner,
         created_at=query.created_at,
@@ -293,7 +298,8 @@ async def product_list(id: int,
         procent_sale=query.procent_sale,
         promocode=query.promocode,
         colour=query.colour,
-        images=images
+        images=images,
+        price=query.price,
     )
     products.append(product_data)
 

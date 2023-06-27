@@ -12,6 +12,6 @@ app.include_router(admin_router)
 # app.include_router(users_router)
 app.include_router(admin_auth_router)
 app.include_router(product_router)
-# app.include_router(order_router)
+app.include_router(order_router)
 
 app.mount("/api/users", users_router)

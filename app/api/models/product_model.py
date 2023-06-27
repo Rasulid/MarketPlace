@@ -9,16 +9,16 @@ from api.db.DataBasse import Base
 class ProductModel(Base):
     __tablename__ = 'products'
     id = Column(Integer, primary_key=True)
-    title = Column(String, nullable=False)
-    description = Column(String, nullable=False)
-    category = Column(String, nullable=False)
-    owner_id = Column(Integer, ForeignKey('users.id'), nullable=True)
+    title = Column(String)
+    description = Column(String)
+    category = Column(String)
+    owner = Column(Integer, ForeignKey('admins.id'),onupdate="Cascade")
     created_at = Column(DateTime, default=func.utcnow())
-    count = Column(Integer, nullable=False)
-    percent_sale = Column(Integer)
+    count = Column(Integer)
+    procent_sale = Column(Integer)
     promocode = Column(String)
-    color = Column(String, nullable=False)
-    price = Column(Float, nullable=False)
+    colour = Column(String)
+    price = Column(Float)
     images = relationship("ProductImage", back_populates="product")
 
 
