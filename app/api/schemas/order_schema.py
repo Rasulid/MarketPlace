@@ -24,3 +24,11 @@ class OrderSchema(BaseModel):
     order_status: OrderStatus
     user_id: int
     # order_products: list[OrderedProductSchema]
+
+
+class OrderSchemaRead(BaseModel):
+    payment_method: PaymentMethod
+    total_price: int
+    order_status: OrderStatus
+    user_id: int
+    order_products: list[OrderedProductSchema]

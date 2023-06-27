@@ -6,8 +6,8 @@ from api.db.DataBasse import Base
 class OrderedProduct(Base):
     __tablename__ = 'ordered_products'
     id = Column(Integer, primary_key=True)
-    product_id = Column(Integer, ForeignKey('products.id', ondelete="CASCADE"))
-    order_id = Column(Integer, ForeignKey('orders.id', ondelete="CASCADE"))
+    product_id = Column(Integer, ForeignKey('products.id'), nullable=True)
+    order_id = Column(Integer, ForeignKey('orders.id'), nullable=True)
     count = Column(Integer)
 
 
@@ -17,5 +17,7 @@ class Order(Base):
     payment_method = Column(String)
     total_price = Column(Float)
     order_status = Column(String)
-    user_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"))
-    ordered_products = relationship("OrderedProduct", secondary=OrderedProduct)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
+    ordered_products = relationship("OrderedProduct", secondary="ordered_products",
+                                    primaryjoin="Order.id == OrderedProduct.order_id",
+                                    secondaryjoin="Order.id == OrderedProduct.order_id")

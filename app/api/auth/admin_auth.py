@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException, status, APIRouter
 
-from api.models.user_model import Base, User_Model
+from api.models.user_model import Base, UserModel
 from api.core.config import SECRET_KEY, AlGORITHM
 from typing import Optional
 from passlib.context import CryptContext
@@ -10,7 +10,7 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta, datetime
 from jose import jwt, JWTError
 
-from api.models.admin_model import Admin_Model
+from api.models.admin_model import AdminModel
 
 SECRET_KEY = SECRET_KEY
 ALGORITHM = AlGORITHM
@@ -50,10 +50,10 @@ def verify_password(plain_password, hashed_password):
 
 
 def authenticate_admin(gmail: str, password: str, db):
-    user = db.query(Admin_Model).filter(Admin_Model.gmail == gmail).first()
+    user = db.query(AdminModel).filter(AdminModel.gmail == gmail).first()
 
     if user is None:
-        user = db.query(User_Model).filter(User_Model.gmail == gmail).first()
+        user = db.query(UserModel).filter(UserModel.gmail == gmail).first()
 
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user is not valid")

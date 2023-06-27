@@ -6,26 +6,26 @@ from api.db.DataBasse import Base
 
 
 
-class Product_Model(Base):
+class ProductModel(Base):
     __tablename__ = 'products'
     id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False)
     description = Column(String, nullable=False)
     category = Column(String, nullable=False)
-    owner_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"))
+    owner_id = Column(Integer, ForeignKey('users.id'), nullable=True)
     created_at = Column(DateTime, default=func.utcnow())
     count = Column(Integer, nullable=False)
     percent_sale = Column(Integer)
     promocode = Column(String)
     color = Column(String, nullable=False)
     price = Column(Float, nullable=False)
-    images = relationship("Product_Image", back_populates="product")
+    images = relationship("ProductImage", back_populates="product")
 
 
-class Product_Image(Base):
+class ProductImage(Base):
     __tablename__ = 'product_images'
     id = Column(Integer, primary_key=True)
     file_name = Column(String)
     file_path = Column(String)
     product_id = Column(Integer, ForeignKey('products.id', ondelete="CASCADE"))
-    product = relationship("Product_Model", back_populates="images")
+    product = relationship("ProductModel", back_populates="images")

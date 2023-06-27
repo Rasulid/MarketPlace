@@ -3,10 +3,10 @@ from api.core.config import SECRET_KEY, AlGORITHM
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 from jose.exceptions import ExpiredSignatureError
-from api.models.admin_model import Admin_Model
+from api.models.admin_model import AdminModel
 from api.auth.admin_auth import oauth2_bearer, for_user_exception, get_user_exceptions
 from api.db.session import get_db
-from api.models.user_model import User_Model
+from api.models.user_model import UserModel
 
 SECRET_KEY = SECRET_KEY
 ALGORITHM = AlGORITHM
@@ -22,7 +22,7 @@ async def get_current_admin(token: str = Depends(oauth2_bearer),
     gmail: str = pyload.get("username")
     user_id: int = pyload.get("id")
     try:
-        res = db.query(Admin_Model).filter(Admin_Model.gmail == gmail).first()
+        res = db.query(AdminModel).filter(AdminModel.gmail == gmail).first()
 
         is_super = res.is_superuser
         if res is None:
@@ -49,7 +49,7 @@ async def get_current_staff(token: str = Depends(oauth2_bearer),
     gmail: str = pyload.get("username")
     user_id: int = pyload.get("id")
 
-    res = db.query(Admin_Model).filter(Admin_Model.gmail == gmail).first()
+    res = db.query(AdminModel).filter(AdminModel.gmail == gmail).first()
 
     if res is None:
         raise for_user_exception()
@@ -75,7 +75,7 @@ async def get_current_user(token: str = Depends(oauth2_bearer),
     gmail: str = pyload.get("username")
     user_id: int = pyload.get("id")
 
-    res = db.query(User_Model).filter(User_Model.gmail == gmail).first()
+    res = db.query(UserModel).filter(UserModel.gmail == gmail).first()
 
 
     if res is None:

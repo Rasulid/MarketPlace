@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import Integer, String, Boolean, Column, DateTime, func
 from api.db.DataBasse import Base
 
-class Admin_Model(Base):
+class AdminModel(Base):
     __tablename__ = 'admins'
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)

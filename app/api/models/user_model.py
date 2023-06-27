@@ -4,7 +4,7 @@ from sqlalchemy import Integer, String, Boolean, Column, DateTime, func
 from api.db.DataBasse import Base, engine
 
 
-class User_Model(Base):
+class UserModel(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)

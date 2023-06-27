@@ -9,7 +9,7 @@ from api.db.session import get_db
 from api.auth.admin_auth import password_hash
 from api.auth.login import get_current_admin, get_user_exceptions
 from api.schemas.admin_schema import Admin_Schema, Admin_Read_Schema
-from api.models.admin_model import Admin_Model
+from api.models.admin_model import AdminModel
 
 router = APIRouter(tags=["Admin"],
                    prefix="/api/admin")
@@ -21,7 +21,7 @@ async def register(admin: Admin_Schema,
                    login: dict = Depends(get_current_admin)):
     res = []
 
-    admin_model = Admin_Model()
+    admin_model = AdminModel()
     admin_model.name = admin.name
     admin_model.age = admin.age
     admin_model.created_at = admin.created_at
@@ -36,7 +36,7 @@ async def register(admin: Admin_Schema,
     admin_model.is_verified = admin.is_verified
 
     if admin_model:
-        user_name = db.query(Admin_Model).all()
+        user_name = db.query(AdminModel).all()
         for x in user_name:
             if admin_model.gmail == x.gmail:
                 raise HTTPException(status_code=status.HTTP_409_CONFLICT,
@@ -57,8 +57,8 @@ async def update_admin(admin: Admin_Schema,
                        db: Session = Depends(get_db),
                        login: dict = Depends(get_current_admin)):
     id = login.get("user_id")
-    admin_model = db.query(Admin_Model) \
-        .filter(Admin_Model.id == id).first()
+    admin_model = db.query(AdminModel) \
+        .filter(AdminModel.id == id).first()
 
     if admin_model is None:
         return JSONResponse(
@@ -78,7 +78,7 @@ async def update_admin(admin: Admin_Schema,
     admin_model.is_superuser = admin.is_superuser
     admin_model.is_verified = admin.is_verified
 
-    check_admin = db.query(Admin_Model).filter(Admin_Model.gmail == login.get("sub")).first()
+    check_admin = db.query(AdminModel).filter(AdminModel.gmail == login.get("sub")).first()
 
     if check_admin.id == admin_model.id:
         hash_password = password_hash(admin.password)
@@ -99,7 +99,7 @@ async def user_list(db: Session = Depends(get_db),
     if user is None:
         raise get_user_exceptions()
 
-    model_ = db.query(Admin_Model).all()
+    model_ = db.query(AdminModel).all()
     return model_
 
 
@@ -108,14 +108,14 @@ async def delete_admin(id: int,
                         db: Session = Depends(get_db),
                        login: dict = Depends(get_current_admin)):
 
-    db_query = db.query(Admin_Model) \
-        .filter(Admin_Model.id == id).first()
+    db_query = db.query(AdminModel) \
+        .filter(AdminModel.id == id).first()
 
     if db_query is None:
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
             content={"message": "Admin not found"})
 
-    delete = db.query(Admin_Model).filter(Admin_Model.id == id).delete()
+    delete = db.query(AdminModel).filter(AdminModel.id == id).delete()
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)

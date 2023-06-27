@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 
 from api.db.session import get_db
 from api.schemas.users_schemas import User_Schema
-from api.models.user_model import User_Model
+from api.models.user_model import UserModel
 from api.db.DataBasse import SessionLocal
 from api.auth.admin_auth import password_hash, verify_password
 from api.auth.login import get_user_exceptions, get_current_staff, get_current_user
@@ -20,7 +20,7 @@ async def list_users(id: int
     if login is None:
         return get_user_exceptions()
 
-    query = db.query(User_Model).filter(User_Model.id == id).first()
+    query = db.query(UserModel).filter(UserModel.id == id).first()
 
     return query
 
@@ -31,7 +31,7 @@ async def list_users(db: Session = Depends(get_db),
     if login is None:
         return get_user_exceptions()
 
-    query = db.query(User_Model).all()
+    query = db.query(UserModel).all()
 
     return query
 
@@ -41,7 +41,7 @@ async def register(user: User_Schema,
                    db: Session = Depends(get_db)):
     res = []
 
-    user_model = User_Model()
+    user_model = UserModel()
     user_model.name = user.name
     user_model.l_name = user.l_name
     user_model.age = user.age
@@ -58,7 +58,7 @@ async def register(user: User_Schema,
     user_model.is_staff = False
 
     if user_model:
-        user_name = db.query(User_Model).all()
+        user_name = db.query(UserModel).all()
         for x in user_name:
             if user_model.gmail == x.gmail:
                 raise HTTPException(status_code=status.HTTP_409_CONFLICT,
@@ -79,8 +79,8 @@ async def update_user(user: User_Schema,
                        db: Session = Depends(get_db),
                        login: dict = Depends(get_current_user)):
     id = login.get("user_id")
-    user_model = db.query(User_Model) \
-        .filter(User_Model.id == id).first()
+    user_model = db.query(UserModel) \
+        .filter(UserModel.id == id).first()
 
     if user_model is None:
         return JSONResponse(
@@ -102,7 +102,7 @@ async def update_user(user: User_Schema,
     user_model.is_superuser = False
     user_model.is_staff = False
 
-    check_admin = db.query(User_Model).filter(User_Model.gmail == login.get("sub")).first()
+    check_admin = db.query(UserModel).filter(UserModel.gmail == login.get("sub")).first()
 
     if check_admin.id == user_model.id:
         hash_password = password_hash(user.password)
@@ -123,8 +123,8 @@ async def update_user_by_id(user: User_Schema,
                        db: Session = Depends(get_db),
                        login: dict = Depends(get_current_staff)):
 
-    user_model = db.query(User_Model) \
-        .filter(User_Model.id == id).first()
+    user_model = db.query(UserModel) \
+        .filter(UserModel.id == id).first()
 
     if user_model is None:
         return JSONResponse(
@@ -146,7 +146,7 @@ async def update_user_by_id(user: User_Schema,
     user_model.is_superuser = False
     user_model.is_staff = False
 
-    check_admin = db.query(User_Model).filter(User_Model.gmail == user_model.gmail).first()
+    check_admin = db.query(UserModel).filter(UserModel.gmail == user_model.gmail).first()
 
     if check_admin.id == user_model.id:
         hash_password = password_hash(user.password)
@@ -167,14 +167,14 @@ async def delete_user(db: Session = Depends(get_db),
                       login: dict = Depends(get_current_user)):
     id = login.get("user_id")
 
-    query = db.query(User_Model).filter(User_Model.id == id).first()
+    query = db.query(UserModel).filter(UserModel.id == id).first()
 
     if query is None:
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
             content={"message": "User not found"})
 
-    delete = db.query(User_Model).filter(User_Model.id == id).delete()
+    delete = db.query(UserModel).filter(UserModel.id == id).delete()
 
     db.commit()
 

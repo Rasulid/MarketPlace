@@ -61,12 +61,12 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 
-class Product_Image_Schema(BaseModel):
+class ProductImageSchema(BaseModel):
     file_name: str
     file_path: str
 
 
-class Product_Schema_Read(BaseModel):
+class ProductSchemaRead(BaseModel):
     title: str
     desc: str
     category: str
@@ -76,13 +76,13 @@ class Product_Schema_Read(BaseModel):
     procent_sale: Optional[int]
     promocode: Optional[str]
     colour: str
-    images: List[Product_Image_Schema]
+    images: List[ProductImageSchema]
 
     class Config:
         orm_mode = True
 
 
-class Product_Schema(BaseModel):
+class ProductSchema(BaseModel):
     title: str
     desc: str
     category: str
@@ -95,12 +95,12 @@ class Product_Schema(BaseModel):
     colour: str
 
 
-class Product_Schema_Read_V2(BaseModel):
+class ProductSchemaReadV2(BaseModel):
 
     title: str  # Название продукта
     desc: str  # Описание продукта
     category: str  # Категория продукта
-    images: List[Product_Image_Schema]  # Список изображений продукта
+    images: List[ProductImageSchema]  # Список изображений продукта
     owner: int  # Идентификатор владельца продукта
     created_at: datetime  # Дата и время создания продукта
     count: int  # Количество продукта (целое число)
@@ -112,7 +112,7 @@ class Product_Schema_Read_V2(BaseModel):
         orm_mode = True
 
 
-class AStudentWorkCreateSchema(Product_Schema):
+class AStudentWorkCreateSchema(ProductSchema):
     @classmethod
     def __get_validators__(cls):
         yield cls.validate_to_json
