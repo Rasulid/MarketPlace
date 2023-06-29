@@ -1,30 +1,18 @@
+from enum import Enum
+from pydantic import BaseModel
 from typing import List
 
-from pydantic import BaseModel
-from enum import Enum
+class PaymentMethod(str, Enum):
+    cash = 'cash'
+    card = 'card'
 
-
-class PaymentMethod(Enum):
-    cash = "cash"
-    card = "card"
-
-
-class OrderStatus(Enum):
-    in_the_shop = "in the shop"
-    courier_took = "courier took"
-
+class OrderStatus(str, Enum):
+    in_the_shop = 'in the shop'
+    courier_took = 'courier took'
 
 class OrderedProductSchema(BaseModel):
     product_id: int
     order_id: int
-    count: int
-
-
-class OrderSchema(BaseModel):
-    payment_method: PaymentMethod
-    order_status: OrderStatus
-    order_products: List[OrderedProductSchema]
-
 
 class OrderSchemaRead(BaseModel):
     payment_method: PaymentMethod
@@ -32,3 +20,10 @@ class OrderSchemaRead(BaseModel):
     order_status: OrderStatus
     user_id: int
     order_products: List[OrderedProductSchema]
+
+class OrderSchema(BaseModel):
+    payment_method: PaymentMethod
+    order_status: OrderStatus
+    total_price: float
+    user_id: int
+    count: int

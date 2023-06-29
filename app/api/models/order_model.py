@@ -8,7 +8,6 @@ class OrderedProduct(Base):
     id = Column(Integer, primary_key=True)
     product_id = Column(Integer, ForeignKey('products.id'), nullable=True)
     order_id = Column(Integer, ForeignKey('orders.id'), nullable=True)
-    count = Column(Integer)
 
 
 class Order(Base):
@@ -18,6 +17,7 @@ class Order(Base):
     total_price = Column(Float)
     order_status = Column(String)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
+    count = Column(Integer)
     ordered_products = relationship("OrderedProduct", secondary="ordered_products",
                                     primaryjoin="Order.id == OrderedProduct.order_id",
                                     secondaryjoin="Order.id == OrderedProduct.order_id")
