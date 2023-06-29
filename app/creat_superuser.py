@@ -6,14 +6,14 @@ from starlette import status
 
 from api.auth.admin_auth import password_hash
 from api.db.session import get_db
-from api.models.admin_model import Admin_Model
+from api.models.admin_model import AdminModel
 
 app = FastAPI()
 
 
 @app.post("/api/create/root/superuser")
 def register(db: Session = Depends(get_db)):
-    admin_model = Admin_Model()
+    admin_model = AdminModel()
     admin_model.name = "rasul"
     admin_model.age = 20
     admin_model.created_at = datetime.now()
@@ -31,7 +31,7 @@ def register(db: Session = Depends(get_db)):
     admin_model.password = hash_password
 
     if admin_model:
-        user_name = db.query(Admin_Model).all()
+        user_name = db.query(AdminModel).all()
         for x in user_name:
             if admin_model.gmail == x.gmail:
                 raise HTTPException(status_code=status.HTTP_409_CONFLICT,
