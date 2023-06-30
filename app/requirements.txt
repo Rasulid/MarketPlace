@@ -25,3 +25,5 @@ celery
 flower
 psycopg2-binary
 fastapi-sqlalchemy
+gunicorn
+python-jose

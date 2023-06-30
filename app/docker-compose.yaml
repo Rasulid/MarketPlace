@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+  db:
+    image: postgres:15
+    container_name: db_app
+    command: -p 1221
+    expose:
+      - 1221
+    env_file:
+      - api/.env-non-dev
+
+  app:
+      build:
+        context: .
+      env_file:
+        - api/.env
+      container_name: market-palace
+      command: ["api/docker/app.sh"]
+      ports:
+        - 9999:8000
+      depends_on:
+        - db

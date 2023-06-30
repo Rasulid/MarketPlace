@@ -12,7 +12,7 @@ class ProductModel(Base):
     title = Column(String)
     description = Column(String)
     category = Column(String)
-    owner = Column(Integer, ForeignKey('admins.id'),onupdate="Cascade")
+    owner = Column(Integer, ForeignKey('admins.id', ondelete='SET NULL'),onupdate="Cascade")
     created_at = Column(DateTime, default=func.utcnow())
     count = Column(Integer)
     procent_sale = Column(Integer)
