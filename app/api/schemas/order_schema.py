@@ -21,9 +21,11 @@ class OrderSchemaRead(BaseModel):
     user_id: int
     order_products: List[OrderedProductSchema]
 
+    class Config:
+        orm_mode = True
+
 class OrderSchema(BaseModel):
     payment_method: PaymentMethod
     order_status: OrderStatus
-    total_price: float
-    user_id: int
     count: int
+

@@ -78,7 +78,7 @@ async def create_product(
     images_data = []
     for image in result:
         image_data = ProductImageSchema(file_name=image.file_name,
-                                          file_path=image.file_path)
+                                        file_path=image.file_path)
         images_data.append(image_data)
 
     product_data = ProductSchemaReadV2(
@@ -134,7 +134,6 @@ async def product_list(db: Session = Depends(get_db),
     return products
 
 
-
 @router.put("/update/{id}")
 async def update_product(
         id: int,
@@ -152,11 +151,9 @@ async def update_product(
 
     result = []
 
-    query = db.query(ProductModel).filter(ProductModel.id == id).first()
+    product_model = db.query(ProductModel).filter(ProductModel.id == id).first()
 
-    if query is not None:
-
-        product_model = ProductModel()
+    if product_model is not None:
         product_model.title = product.title
         product_model.description = product.description
         product_model.category = product.category
@@ -168,43 +165,53 @@ async def update_product(
         product_model.colour = product.colour
         product_model.price = product.price
 
-        db.add(product_model)
-        db.commit()
         res.append(product_model)
 
-        file_path = f"static/image"
-        images = db.query(ProductImage).filter(ProductImage.product_id == id).all()
-        for image in images:
+        file_path = "static/image"  # Make sure to include the appropriate file extension
+
+        # Delete all existing images for the product
+        image_models = db.query(ProductImage).filter(ProductImage.product_id == id).all()
+
+        for image in image_models:
             if image.file_name:
-                print(image.file_name)
                 file_name = os.path.join(file_path, image.file_name)
                 if os.path.exists(file_name):
                     os.remove(file_name)
-                else:
-                    return JSONResponse(
-                        status_code=status.HTTP_404_NOT_FOUND,
-                        content="Photo not Found"
-                    )
 
+        # Delete all existing images from the database
+        db.query(ProductImage).filter(ProductImage.product_id == id).delete()
+
+        # Create new images
+        new_image_models = []
         for x in upload_image:
-            image_model = ProductImage()
-            image_model.file_path = x.file_path
-            image_model.file_name = x.file_name
-            image_model.product_id = product_model.id
+            new_image = ProductImage(
+                file_path=x.file_path,
+                file_name=x.file_name,
+                product_id=product_model.id
+            )
+            new_image_models.append(new_image)
 
-            result.append(image_model)
+        # Add new images to the database session
+        db.add_all(new_image_models)
+        db.commit()
+
+        # Update the product images with the new ones
+        product_model.images = new_image_models
 
         db.add_all(result)
         db.commit()
+        db.add(product_model)
+        db.commit()
+
         images_data = []
-        for image in result:
+        for image in new_image_models:
             image_data = ProductImageSchema(file_name=image.file_name,
-                                              file_path=image.file_path)
+                                            file_path=image.file_path)
             images_data.append(image_data)
 
         product_data = ProductSchemaReadV2(
             title=product.title,
-            ription=product.ription,
+            description=product.description,
             category=product.category,
             images=images_data,
             owner=product_model.owner,
@@ -217,7 +224,7 @@ async def update_product(
         )
         return product_data
 
-    return query
+    return product_model
 
 
 @router.delete("/delete/{id}")
@@ -227,8 +234,8 @@ async def delete_product(id: int,
     if login is None:
         return get_user_exceptions()
 
-    chack = db.query(ProductModel)\
-        .filter(ProductModel.id == id)\
+    chack = db.query(ProductModel) \
+        .filter(ProductModel.id == id) \
         .first()
 
     if chack is None:
@@ -250,8 +257,8 @@ async def delete_product(id: int,
     db.query(ProductImage).filter(ProductImage.product_id == id).delete()
 
     # Удаление товара
-    query = db.query(ProductModel)\
-        .filter(ProductModel.id == id)\
+    query = db.query(ProductModel) \
+        .filter(ProductModel.id == id) \
         .delete()
 
     db.commit()

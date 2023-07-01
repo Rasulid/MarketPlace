@@ -13,7 +13,7 @@ from jose import jwt, JWTError
 from api.models.admin_model import AdminModel
 
 SECRET_KEY = SECRET_KEY
-ALGORITHM = AlGORITHM
+ALGORITHM = "HS256"
 
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/auth/token/")
 

@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from api.db.session import get_db
 from api.models.product_model import ProductModel
@@ -15,43 +15,49 @@ router = APIRouter(tags=['Orders'],
                    prefix="/api/orders")
 
 
+
+
 @router.post('/create', response_model=OrderSchemaRead)
-async def create_order(order_schema: OrderSchema,
-                       product_id: int,
-                       user_id: int,
-                       ordered_product_schema: OrderedProductSchema,
-                       db: Session = Depends(get_db)):
-    query_to_prod = db.query(ProductModel) \
-        .filter(ProductModel.id == product_id) \
-        .first()
-
-    query_to_user = db.query(UserModel) \
-        .filter(UserModel.id == user_id) \
-        .first()
-
-    if query_to_prod is None or query_to_user is None:
+async def create_order(
+        order_schema: OrderSchema,
+        product_id: int,
+        user_id: int,
+        db: Session = Depends(get_db)
+):
+    query = db.query(ProductModel).filter(ProductModel.id == product_id).first()
+    user = db.query(UserModel).filter(UserModel.id == user_id).first()
+    if query is None or user is None:
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
-            content="Not Found")
+            content="user or product is invalid"
+        )
+    if query.count < order_schema.count:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content="there are not enough products available"
+        )
 
-    order = Order()
-    order.payment_method = order_schema.payment_method
-    order.total_price = query_to_prod.price
-    order.order_status = order_schema.order_status
-    order.user_id = user_id
-    order.count = order_schema.count
+    order = Order(
+        payment_method=order_schema.payment_method,
+        total_price=query.price * order_schema.count,
+        order_status=order_schema.order_status,
+        user_id=user_id,
+        count=order_schema.count
+    )
 
-    db.add(order)
+    query.count -= order.count
+
+    db.add_all([query, order])
     db.commit()
 
+    # Remove extra data in the database
+    db.query(OrderedProduct).filter(OrderedProduct.product_id == product_id).delete()
+
     order_products = []
-    print(order.count)
-    for ordered_product in range(order.count):
+    for _ in range(order.count):
         ordered_prod = OrderedProduct()
         ordered_prod.product_id = product_id
         ordered_prod.order_id = order.id
-
-
 
         db.add(ordered_prod)
         db.commit()
@@ -61,10 +67,9 @@ async def create_order(order_schema: OrderSchema,
             order_id=ordered_prod.order_id
         ))
 
-    t_p = order.total_price * order.count
     response = OrderSchemaRead(
         payment_method=order.payment_method,
-        total_price=t_p,
+        total_price=order.total_price,
         order_status=order.order_status,
         user_id=order.user_id,
         order_products=order_products
