@@ -9,7 +9,9 @@ sys.path.append(os.path.join(sys.path[0], 'src'))
 
 from api.core.config import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER
 from api.models.admin_model import Base
-from api.models import admin_model, product_model, order_model, user_model
+from api.models import (admin_model, product_model, order_model,
+                        user_model, category_model, colour_model)
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
