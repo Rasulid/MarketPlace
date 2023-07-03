@@ -8,11 +8,11 @@ from api.auth.admin_auth import password_hash
 from api.db.session import get_db
 from api.models.admin_model import AdminModel
 
-app = FastAPI()
+router = FastAPI(title="SuperUser")
 
 
-@app.post("/api/create/root/superuser")
-def register(db: Session = Depends(get_db)):
+@router.post("/create/root/superuser")
+async def register(db: Session = Depends(get_db)):
     admin_model = AdminModel()
     admin_model.name = "rasul"
     admin_model.age = 20
@@ -27,15 +27,16 @@ def register(db: Session = Depends(get_db)):
     admin_model.is_superuser = True
     admin_model.is_verified = True
 
-    hash_password = password_hash('root')
+    hash_password = password_hash('root')  # Make sure to implement this function correctly
     admin_model.password = hash_password
 
-    if admin_model:
-        user_name = db.query(AdminModel).all()
-        for x in user_name:
-            if admin_model.gmail == x.gmail:
-                raise HTTPException(status_code=status.HTTP_409_CONFLICT,
-                                    detail={'msg': "user is already exists"})
+    user_name = db.query(AdminModel).all()
+    for x in user_name:
+        if admin_model.gmail == x.gmail:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="user is already exists"
+            )
 
     db.add(admin_model)
     db.commit()

@@ -50,7 +50,6 @@ async def create_order(
     db.add_all([query, order])
     db.commit()
 
-    # Remove extra data in the database
     db.query(OrderedProduct).filter(OrderedProduct.product_id == product_id).delete()
 
     order_products = []

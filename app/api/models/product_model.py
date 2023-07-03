@@ -3,8 +3,19 @@ from sqlalchemy import Integer, String, Boolean, Column, ForeignKey, DateTime, f
 from sqlalchemy.orm import relationship
 
 from api.db.DataBasse import Base
+class ColourModel(Base):
+    __tablename__ = "colour"
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String)
 
+    products = relationship("ProductModel", backref="colour")
 
+class CategoryModel(Base):
+    __tablename__ = "category"
+    id = Column(Integer, primary_key=True)
+    title = Column(String)
+
+    product = relationship("ProductModel", backref="category")
 
 class ProductModel(Base):
     __tablename__ = 'products'
@@ -13,11 +24,11 @@ class ProductModel(Base):
     description = Column(String)
     category_id = Column(Integer, ForeignKey('category.id', ondelete='SET NULL'))
     owner = Column(Integer, ForeignKey('admins.id', ondelete='SET NULL'))
-    created_at = Column(DateTime, default=func.utcnow())
+    created_at = Column(DateTime)
     count = Column(Integer)
     procent_sale = Column(Integer)
     promocode = Column(String)
-    colour = Column(Integer, ForeignKey("colour.id", ondelete="SET NULL"))
+    colour_id = Column(Integer, ForeignKey('colour.id', ondelete='SET NULL'))
     price = Column(Float)
     images = relationship("ProductImage", back_populates="product")
 
