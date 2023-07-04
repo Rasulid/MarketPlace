@@ -6,6 +6,8 @@ from api.auth.admin_auth import router as admin_auth_router
 from api.router.product_router import router as product_router
 from api.router.order_router import router as order_router
 from api.creat_superuser import router as super_user_router
+from api.router.category_router import router as category_router
+from api.router.colour_router import router as colour_router
 
 app = FastAPI(title="Admin",
               docs_url="/api/admin/docs")
@@ -14,6 +16,8 @@ app.include_router(admin_router)
 app.include_router(admin_auth_router)
 app.include_router(product_router)
 app.include_router(order_router)
+app.include_router(category_router)
+app.include_router(colour_router)
 
 app.mount("/api/users", users_router)
 app.mount("/api/super-user", super_user_router)

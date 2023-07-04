@@ -4,7 +4,7 @@ from typing import List
 
 from pydantic import BaseModel, Field
 from typing import List, Optional
-from pydantic import BaseModel
+# from pydantic import BaseModel
 
 
 class ProductImageSchema(BaseModel):
@@ -45,16 +45,16 @@ class ProductSchema(BaseModel):
 
 class ProductSchemaReadV2(BaseModel):
 
-    title: str  # Название продукта
-    description: str  # Описание продукта
-    category: str  # Категория продукта
-    images: List[ProductImageSchema]  # Список изображений продукта
-    owner: int  # Идентификатор владельца продукта
-    created_at: datetime  # Дата и время создания продукта
-    count: int  # Количество продукта (целое число)
-    procent_sale: int  # Процент скидки на продукт (целое число)
-    promocode: str  # Промокод продукта
-    colour: str  # Цвет продукта
+    title: str
+    description: str
+    category: str
+    images: List[ProductImageSchema]
+    owner: int
+    created_at: datetime
+    count: int
+    procent_sale: int
+    promocode: str
+    colour: str  
     price: float
 
     class Config:
