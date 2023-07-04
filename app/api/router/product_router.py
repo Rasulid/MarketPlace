@@ -11,9 +11,11 @@ from api.schemas.product_schema import ProductImageSchema, \
     AStudentWorkCreateSchema, ProductSchemaReadV2
 from sqlalchemy.orm import Session, joinedload
 from api.db.session import get_db
-from api.models.product_model import ProductModel, ProductImage
+from api.models.product_model import ProductModel, ProductImage, CategoryModel, ColourModel
 from api.auth.login import get_current_staff
 from api.auth.admin_auth import get_user_exceptions
+from api.schemas.category_schema import CategorySchema
+from api.schemas.colour_schema import ColourSchema
 
 router = APIRouter(
     tags=["Product"],
@@ -33,12 +35,13 @@ async def upload_img(file: List[UploadFile] = File(...)):
 
 
 @router.post("/create", response_model=ProductSchemaReadV2)
-async def create_product(
-        product: AStudentWorkCreateSchema,
-        db: Session = Depends(get_db),
-        file: List[UploadFile] = File(),
-        login: dict = Depends(get_current_staff)
-):
+async def create_product(colour_id: List[int],
+                         category_id: int,
+                         product: AStudentWorkCreateSchema,
+                         db: Session = Depends(get_db),
+                         file: List[UploadFile] = File(),
+                         login: dict = Depends(get_current_staff)
+                         ):
     if login is None:
         return get_user_exceptions()
 
@@ -51,13 +54,13 @@ async def create_product(
     product_model = ProductModel()
     product_model.title = product.title
     product_model.description = product.description
-    product_model.category = product.category
+    product_model.category_id = category_id
     product_model.owner = owner_id
     product_model.created_at = product.created_at
     product_model.count = product.count
     product_model.procent_sale = product.procent_sale
     product_model.promocode = product.promocode
-    product_model.colour = product.colour
+    product_model.colour_id = colour_id
     product_model.price = product.price
 
     db.add(product_model)
@@ -81,17 +84,34 @@ async def create_product(
                                         file_path=image.file_path)
         images_data.append(image_data)
 
+    categorys_data = db.query(CategoryModel).filter(CategoryModel.id == category_id).all()
+    if categorys_data is None:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content="Category's not Found"
+        )
+    colours = []
+    for x in colour_id:
+        colours_data = db.query(ColourModel).filter(ColourModel.id == x).all()
+        if colours_data is None:
+            return JSONResponse(
+                status_code=status.HTTP_404_NOT_FOUND,
+                content="Colours not Found"
+            )
+        print(colours_data)
+        colours.append(colours_data)
+
     product_data = ProductSchemaReadV2(
         title=product.title,
         description=product.description,
-        category=product.category,
+        category=categorys_data,
         images=images_data,
         owner=product_model.owner,
         created_at=product_model.created_at,
         count=product_model.count,
         procent_sale=product_model.procent_sale,
         promocode=product_model.promocode,
-        colour=product_model.colour,
+        colour=colours,
         price=product_model.price
     )
 
@@ -107,6 +127,8 @@ async def product_list(db: Session = Depends(get_db),
     query = (
         db.query(ProductModel)
         .join(ProductImage, ProductModel.id == ProductImage.product_id)
+        .join(CategoryModel, ProductModel.category_id == CategoryModel.id)
+        .join(ColourModel, ProductModel.colour_id == ColourModel.id)
         .options(joinedload(ProductModel.images))
         .all()
     )
@@ -116,16 +138,26 @@ async def product_list(db: Session = Depends(get_db),
             ProductImageSchema(file_name=image.file_name, file_path=image.file_path)
             for image in product.images]
 
+        category = [
+            CategorySchema(id=category.id, title=category.name)
+            for category in product.category
+        ]
+
+        colour = [
+            ColourSchema(id=colour.id, title=colour.title)
+            for colour in product.colour
+        ]
+
         product_data = ProductSchemaReadV2(
             title=product.title,
             description=product.description,
-            category=product.category,
+            category=category,
             owner=product.owner,
             created_at=product.created_at,
             count=product.count,
             procent_sale=product.procent_sale,
             promocode=product.promocode,
-            colour=product.colour,
+            colour=colour,
             images=images,
             price=product.price
         )

@@ -4,42 +4,25 @@ from typing import List
 
 from pydantic import BaseModel, Field
 from typing import List, Optional
-# from pydantic import BaseModel
+
+from api.schemas.colour_schema import ColourSchema
+from api.schemas.category_schema import CategorySchema
 
 
 class ProductImageSchema(BaseModel):
     file_name: str
     file_path: str
 
-
-class ProductSchemaRead(BaseModel):
-    title: str
-    desc: str
-    category: str
-    owner: int
-    created_at: datetime
-    count: int
-    procent_sale: Optional[int]
-    promocode: Optional[str]
-    colour: str
-    price: float
-    images: List[ProductImageSchema]
-
-    class Config:
-        orm_mode = True
-
-
 class ProductSchema(BaseModel):
     title: str
     description: str
-    category: str
+    category_id: int
     created_at: datetime
     count: int
     procent_sale: int
     promocode: str
     procent_sale: Optional[int]
     promocode: Optional[str]
-    colour: str
     price: float
 
 
@@ -47,14 +30,14 @@ class ProductSchemaReadV2(BaseModel):
 
     title: str
     description: str
-    category: str
+    category: List[CategorySchema]
     images: List[ProductImageSchema]
     owner: int
     created_at: datetime
     count: int
     procent_sale: int
     promocode: str
-    colour: str  
+    colour: List[ColourSchema]
     price: float
 
     class Config:

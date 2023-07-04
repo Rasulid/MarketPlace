@@ -28,15 +28,14 @@ async def category_create(
     model = ColourModel()
     model.title = title
 
-    query = db.query(ColourModel).filter(ColourModel.title == title)
-    if query is not None:
-        return JSONResponse(status_code=status.HTTP_409_CONFLICT,
-                            content="this colour already exists")
+    query = db.query(ColourModel).filter(ColourModel.title == title).first()
+    if query is None:
+        db.add(model)
+        db.commit()
 
-    db.add(model)
-    db.commit()
-
-    return model
+        return model
+    return JSONResponse(status_code=status.HTTP_409_CONFLICT,
+                        content="this colour already exists")
 
 
 @router.put("/update/{id}}", response_model=ColourSchema)
@@ -65,7 +64,6 @@ async def delete_colour(id: int,
                         db: Session = Depends(get_db),
                         login: dict = Depends(get_current_staff)
                         ):
-
     chack = db.query(ColourModel).filter(ColourModel.id == id).first()
 
     if chack is not None:

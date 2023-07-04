@@ -4,13 +4,21 @@ from sqlalchemy.orm import relationship
 from api.db.DataBasse import Base
 
 
+class ColourProduct(Base):
+    __tablename__ = 'colour_product'
+    id = Column(Integer, primary_key=True, index=True)
+    product_id = Column(Integer, ForeignKey("products.id",ondelete="SET NULL"))
+    colour_id = Column(Integer, ForeignKey("colour.id",ondelete="SET NULL"))
+
 class ColourModel(Base):
     __tablename__ = "colour"
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String)
 
     products = relationship("ProductModel", back_populates="colour")
-
+    colour_products = relationship("ColourProduct", secondary="colour_product",
+                                   primaryjoin='ColourModel.id == ColourProduct.colour_id',
+                                   secondaryjoin='ColourModel.id == ColourProduct.colour_id')
 
 class CategoryModel(Base):
     __tablename__ = "category"
@@ -31,7 +39,6 @@ class ProductModel(Base):
     count = Column(Integer)
     procent_sale = Column(Integer)
     promocode = Column(String)
-    colour_id = Column(Integer, ForeignKey('colour.id', ondelete='SET NULL'))
     price = Column(Float)
     images = relationship("ProductImage", back_populates="product")
 

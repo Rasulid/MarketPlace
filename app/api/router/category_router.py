@@ -30,15 +30,16 @@ async def category_create(
     model = CategoryModel()
     model.title = title
 
-    query = db.query(CategoryModel).filter(CategoryModel.title == title)
-    if query is not None:
-        return JSONResponse(status_code=status.HTTP_409_CONFLICT,
-                            content="this colour already exists")
+    query = db.query(CategoryModel).filter(CategoryModel.title == title).first()
+    print(query)
+    if query is None:
 
-    db.add(model)
-    db.commit()
+        db.add(model)
+        db.commit()
 
-    return model
+        return model
+    return JSONResponse(status_code=status.HTTP_409_CONFLICT,
+                        content="this colour already exists")
 
 
 @router.put("/update/{id}}", response_model=CategorySchema)
