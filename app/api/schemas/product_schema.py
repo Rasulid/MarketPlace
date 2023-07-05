@@ -5,7 +5,7 @@ from typing import List
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
-from api.schemas.colour_schema import ColourSchema
+from api.schemas.colour_schema import ColourSchema, ProductColourSchema
 from api.schemas.category_schema import CategorySchema
 
 
@@ -37,7 +37,7 @@ class ProductSchemaReadV2(BaseModel):
     count: int
     procent_sale: int
     promocode: str
-    colour: List[ColourSchema]
+    colour: List[ProductColourSchema]
     price: float
 
     class Config:

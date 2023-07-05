@@ -5,17 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c04f7781-be60-4d61-b24e-23f37a7cd7ba" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/api/router/category_router.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/api/router/colour_router.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/api/schemas/category_schema.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/api/schemas/colour_schema.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/MarketPlace.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/MarketPlace.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/.env" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/alembic/env.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/alembic/env.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/auth/admin_auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/auth/admin_auth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/models/product_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/models/product_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/router/product_router.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/product_router.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/schemas/product_schema.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/schemas/product_schema.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,20 +34,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "dart.analysis.tool.window.visible": "false",
+    "last_opened_file_path": "/home/rasulabduvaitov/Desktop/teaching",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app/api" />
@@ -71,7 +66,9 @@
       <workItem from="1688191641829" duration="8425000" />
       <workItem from="1688277262141" duration="3711000" />
       <workItem from="1688392748812" duration="1807000" />
-      <workItem from="1688445293079" duration="7045000" />
+      <workItem from="1688445293079" duration="20644000" />
+      <workItem from="1688548108431" duration="4311000" />
+      <workItem from="1688566156752" duration="1223000" />
     </task>
     <servers />
   </component>

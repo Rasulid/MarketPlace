@@ -3,7 +3,7 @@ import shutil
 import uuid
 from typing import List
 
-from fastapi import APIRouter, Depends, status, UploadFile, File
+from fastapi import APIRouter, Depends, status, UploadFile, File, Body
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 
@@ -11,11 +11,11 @@ from api.schemas.product_schema import ProductImageSchema, \
     AStudentWorkCreateSchema, ProductSchemaReadV2
 from sqlalchemy.orm import Session, joinedload
 from api.db.session import get_db
-from api.models.product_model import ProductModel, ProductImage, CategoryModel, ColourModel
+from api.models.product_model import ProductModel, ProductImage, CategoryModel, ColourModel, ColourProduct
 from api.auth.login import get_current_staff
 from api.auth.admin_auth import get_user_exceptions
 from api.schemas.category_schema import CategorySchema
-from api.schemas.colour_schema import ColourSchema
+from api.schemas.colour_schema import ColourSchema, ProductColourSchema
 
 router = APIRouter(
     tags=["Product"],
@@ -34,14 +34,17 @@ async def upload_img(file: List[UploadFile] = File(...)):
     return image_list
 
 
+router = APIRouter()
+
 @router.post("/create", response_model=ProductSchemaReadV2)
-async def create_product(colour_id: List[int],
-                         category_id: int,
-                         product: AStudentWorkCreateSchema,
-                         db: Session = Depends(get_db),
-                         file: List[UploadFile] = File(),
-                         login: dict = Depends(get_current_staff)
-                         ):
+async def create_product(
+    colour_id: List[int],
+    category_id: int,
+    product: AStudentWorkCreateSchema,
+    db: Session = Depends(get_db),
+    file: List[UploadFile] = File(),
+    login: dict = Depends(get_current_staff),
+):
     if login is None:
         return get_user_exceptions()
 
@@ -60,7 +63,6 @@ async def create_product(colour_id: List[int],
     product_model.count = product.count
     product_model.procent_sale = product.procent_sale
     product_model.promocode = product.promocode
-    product_model.colour_id = colour_id
     product_model.price = product.price
 
     db.add(product_model)
@@ -80,15 +82,17 @@ async def create_product(colour_id: List[int],
 
     images_data = []
     for image in result:
-        image_data = ProductImageSchema(file_name=image.file_name,
-                                        file_path=image.file_path)
+        image_data = ProductImageSchema(
+            file_name=image.file_name,
+            file_path=image.file_path
+        )
         images_data.append(image_data)
 
     categorys_data = db.query(CategoryModel).filter(CategoryModel.id == category_id).all()
     if categorys_data is None:
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
-            content="Category's not Found"
+            content="Category not Found"
         )
     colours = []
     for x in colour_id:
@@ -98,7 +102,6 @@ async def create_product(colour_id: List[int],
                 status_code=status.HTTP_404_NOT_FOUND,
                 content="Colours not Found"
             )
-        print(colours_data)
         colours.append(colours_data)
 
     product_data = ProductSchemaReadV2(
@@ -116,7 +119,6 @@ async def create_product(colour_id: List[int],
     )
 
     return product_data
-
 
 @router.get("/list-product", response_model=List[ProductSchemaReadV2])
 async def product_list(db: Session = Depends(get_db),
@@ -343,3 +345,9 @@ async def product_list(id: int,
     products.append(product_data)
 
     return products
+
+
+@router.post("/test")
+async def test_product( colour_id: List[int],
+    category_id: int,):
+    return {"product": "produ"}

@@ -7,18 +7,20 @@ from api.db.DataBasse import Base
 class ColourProduct(Base):
     __tablename__ = 'colour_product'
     id = Column(Integer, primary_key=True, index=True)
-    product_id = Column(Integer, ForeignKey("products.id",ondelete="SET NULL"))
-    colour_id = Column(Integer, ForeignKey("colour.id",ondelete="SET NULL"))
+    product_id = Column(Integer, ForeignKey("products.id", ondelete="SET NULL"))
+    colour_id = Column(Integer, ForeignKey("colour.id", ondelete="SET NULL"))
+
 
 class ColourModel(Base):
     __tablename__ = "colour"
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String)
 
-    products = relationship("ProductModel", back_populates="colour")
+    # products = relationship("ProductModel", back_populates="colour")
     colour_products = relationship("ColourProduct", secondary="colour_product",
-                                   primaryjoin='ColourModel.id == ColourProduct.colour_id',
-                                   secondaryjoin='ColourModel.id == ColourProduct.colour_id')
+                                   primaryjoin="ColourModel.id == ColourProduct.colour_id",
+                                   secondaryjoin="ColourModel.id == ColourProduct.colour_id")
+
 
 class CategoryModel(Base):
     __tablename__ = "category"
@@ -43,7 +45,7 @@ class ProductModel(Base):
     images = relationship("ProductImage", back_populates="product")
 
     category = relationship("CategoryModel", back_populates="products")
-    colour = relationship("ColourModel", back_populates="products")
+    # colour_products = relationship("ColourProduct", back_populates="product_model")
 
 
 class ProductImage(Base):
@@ -53,16 +55,3 @@ class ProductImage(Base):
     file_path = Column(String)
     product_id = Column(Integer, ForeignKey('products.id', ondelete="CASCADE"))
     product = relationship("ProductModel", back_populates="images")
-
-
-"""
-backref и back_populates - это два разных параметра, используемых для определения обратных отношений между моделями в SQLAlchemy.
-
-backref: Этот параметр определяет автоматическое создание обратной ссылки на связанный объект. Когда вы используете backref, SQLAlchemy автоматически создает новое свойство в связанной модели, которое обеспечивает доступ к родительскому объекту или коллекции объектов.
-
-back_populates: Этот параметр позволяет явно указать имя свойства в связанной модели, которое будет использоваться в качестве обратной ссылки. Вместо того, чтобы SQLAlchemy автоматически создавал новое свойство, вы указываете существующее свойство в связанной модели, которое должно быть использовано в качестве обратной ссылки.
-
-Использование back_populates предпочтительно, когда у вас уже есть существующее свойство в модели, и вы хотите явно указать его в качестве обратной ссылки. Это позволяет предотвратить конфликты и уточняет намерения вашего кода.
-
-В целом, backref и back_populates предоставляют схожую функциональность, но с разным уровнем явности в определении обратных ссылок. Выбор между ними зависит от ваших предпочтений и требований вашего проекта.
-"""

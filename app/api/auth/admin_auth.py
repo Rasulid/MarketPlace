@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException, status, APIRouter
 
 from api.models.user_model import Base, UserModel
-from api.core.config import SECRET_KEY, AlGORITHM
+from api.core.config import SECRET_KEY
 from typing import Optional
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
