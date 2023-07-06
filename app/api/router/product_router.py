@@ -42,12 +42,12 @@ async def create_product(
     product: AStudentWorkCreateSchema,
     db: Session = Depends(get_db),
     file: List[UploadFile] = File(),
-    # login: dict = Depends(get_current_staff),
+    login: dict = Depends(get_current_staff),
 ):
-    # if login is None:
-    #     return get_user_exceptions()
+    if login is None:
+        return get_user_exceptions()
 
-    owner_id = 1  # login.get("user_id")
+    owner_id = login.get("user_id")
     res = []
     upload_image = await upload_img(file)
 
@@ -131,17 +131,67 @@ async def create_product(
 
     return product_data
 
+# @router.get("/list-product", response_model=List[ProductSchemaReadV2])
+# async def product_list(db: Session = Depends(get_db),
+#                        # login: dict = Depends(get_current_staff)):
+#                        ):
+#     # if login is None:
+#     #     return get_user_exceptions()
+#
+#     query = (
+#         db.query(ProductModel)
+#         .join(ProductImage, ProductModel.id == ProductImage.product_id)
+#         .join(CategoryModel, ProductModel.category_id == CategoryModel.id)
+#         .join(ColourProduct, ProductModel.id == ColourProduct.product_id)
+#         .options(joinedload(ProductModel.images))
+#         .all()
+#     )
+#     products = []
+#     for product in query:
+#         images = [
+#             ProductImageSchema(file_name=image.file_name, file_path=image.file_path)
+#             for image in product.images]
+#
+#         category = [
+#             CategorySchema(id=category.id, title=category.name)
+#             for category in product.category_rel
+#         ]
+#
+#         colour = [
+#             ColourSchema(id=colour.id, title=colour.title)
+#             for colour in product.colour
+#         ]
+#
+#         product_data = ProductSchemaReadV2(
+#             title=product.title,
+#             description=product.description,
+#             category=category,
+#             owner=product.owner,
+#             created_at=product.created_at,
+#             count=product.count,
+#             procent_sale=product.procent_sale,
+#             promocode=product.promocode,
+#             colour=colour,
+#             images=images,
+#             price=product.price
+#         )
+#         products.append(product_data)
+#
+#     return products
+
+
 @router.get("/list-product", response_model=List[ProductSchemaReadV2])
 async def product_list(db: Session = Depends(get_db),
-                       login: dict = Depends(get_current_staff)):
-    if login is None:
-        return get_user_exceptions()
+                       # login: dict = Depends(get_current_staff)):
+                       ):
+    # if login is None:
+    #     return get_user_exceptions()
 
     query = (
         db.query(ProductModel)
         .join(ProductImage, ProductModel.id == ProductImage.product_id)
         .join(CategoryModel, ProductModel.category_id == CategoryModel.id)
-        .join(ColourModel, ProductModel.colour_id == ColourModel.id)
+        .join(ColourProduct, ProductModel.id == ColourProduct.product_id)
         .options(joinedload(ProductModel.images))
         .all()
     )
@@ -151,17 +201,15 @@ async def product_list(db: Session = Depends(get_db),
             ProductImageSchema(file_name=image.file_name, file_path=image.file_path)
             for image in product.images]
 
-        category = [
-            CategorySchema(id=category.id, title=category.name)
-            for category in product.category
-        ]
+        category = [CategorySchema(id=product.category_rel.id, title=product.category_rel.title)]
 
         colour = [
-            ColourSchema(id=colour.id, title=colour.title)
-            for colour in product.colour
+            ProductColourSchema(id=colour.id, product_id=colour.product_id, colour_id=colour.colour_id)
+            for colour in product.colour_products_rel
         ]
 
         product_data = ProductSchemaReadV2(
+            id=product.id,
             title=product.title,
             description=product.description,
             category=category,
@@ -357,8 +405,3 @@ async def product_list(id: int,
 
     return products
 
-
-@router.post("/test")
-async def test_product(colour_id: List[int],
-                       category_id: int, ):
-    return {"product": "produ"}
