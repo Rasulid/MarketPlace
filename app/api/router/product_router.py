@@ -36,19 +36,18 @@ async def upload_img(file: List[UploadFile] = File(...)):
 
 router = APIRouter()
 
+
 @router.post("/create", response_model=ProductSchemaReadV2)
 async def create_product(
-    colour_id: List[int],
-    category_id: int,
     product: AStudentWorkCreateSchema,
     db: Session = Depends(get_db),
     file: List[UploadFile] = File(),
-    login: dict = Depends(get_current_staff),
+    # login: dict = Depends(get_current_staff),
 ):
-    if login is None:
-        return get_user_exceptions()
+    # if login is None:
+    #     return get_user_exceptions()
 
-    owner_id = login.get("user_id")
+    owner_id = 1  # login.get("user_id")
     res = []
     upload_image = await upload_img(file)
 
@@ -56,25 +55,50 @@ async def create_product(
 
     product_model = ProductModel()
     product_model.title = product.title
-    product_model.description = product.description
-    product_model.category_id = category_id
     product_model.owner = owner_id
+    product_model.description = product.description
+    product_model.category_id = product.category_id
     product_model.created_at = product.created_at
     product_model.count = product.count
     product_model.procent_sale = product.procent_sale
     product_model.promocode = product.promocode
     product_model.price = product.price
 
+    query_to_category = db.query(CategoryModel).filter(CategoryModel.id == product_model.category_id).first()
+
+    if query_to_category is None:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content="category is empty"
+        )
+
+    for x in product.colours:
+        query_to_colour = db.query(ColourModel).filter(ColourModel.id == x).first()
+        if query_to_colour is None:
+            return JSONResponse(
+                status_code=status.HTTP_404_NOT_FOUND,
+                content="colour is empty"
+            )
+
     db.add(product_model)
     db.commit()
     res.append(product_model)
+
+    colour_data = []
+    for x in product.colours:
+        colour_products = ColourProduct()
+        colour_products.product_id = product_model.id
+        colour_products.colour_id = x
+        colour_data.append(colour_products)
+
+    db.add_all(colour_data)
+    db.commit()
 
     for x in upload_image:
         image_model = ProductImage()
         image_model.file_path = x.file_path
         image_model.file_name = x.file_name
         image_model.product_id = product_model.id
-
         result.append(image_model)
 
     db.add_all(result)
@@ -88,33 +112,20 @@ async def create_product(
         )
         images_data.append(image_data)
 
-    categorys_data = db.query(CategoryModel).filter(CategoryModel.id == category_id).all()
-    if categorys_data is None:
-        return JSONResponse(
-            status_code=status.HTTP_404_NOT_FOUND,
-            content="Category not Found"
-        )
-    colours = []
-    for x in colour_id:
-        colours_data = db.query(ColourModel).filter(ColourModel.id == x).all()
-        if colours_data is None:
-            return JSONResponse(
-                status_code=status.HTTP_404_NOT_FOUND,
-                content="Colours not Found"
-            )
-        colours.append(colours_data)
-
     product_data = ProductSchemaReadV2(
+        id=product_model.id,
         title=product.title,
         description=product.description,
-        category=categorys_data,
+        category=[CategorySchema(id=product.category_id,
+                                 title=query_to_category.title)],
         images=images_data,
         owner=product_model.owner,
         created_at=product_model.created_at,
         count=product_model.count,
         procent_sale=product_model.procent_sale,
         promocode=product_model.promocode,
-        colour=colours,
+        colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id,
+                                    colour_id=colour.colour_id) for colour in colour_data],
         price=product_model.price
     )
 
@@ -348,6 +359,6 @@ async def product_list(id: int,
 
 
 @router.post("/test")
-async def test_product( colour_id: List[int],
-    category_id: int,):
+async def test_product(colour_id: List[int],
+                       category_id: int, ):
     return {"product": "produ"}

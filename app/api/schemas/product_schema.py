@@ -13,6 +13,7 @@ class ProductImageSchema(BaseModel):
     file_name: str
     file_path: str
 
+
 class ProductSchema(BaseModel):
     title: str
     description: str
@@ -24,10 +25,11 @@ class ProductSchema(BaseModel):
     procent_sale: Optional[int]
     promocode: Optional[str]
     price: float
+    colours: List[int]
 
 
 class ProductSchemaReadV2(BaseModel):
-
+    id: int
     title: str
     description: str
     category: List[CategorySchema]
@@ -48,6 +50,7 @@ class AStudentWorkCreateSchema(ProductSchema):
     @classmethod
     def __get_validators__(cls):
         yield cls.validate_to_json
+
     @classmethod
     def validate_to_json(cls, value):
         if isinstance(value, str):

@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, Boolean, Column, ForeignKey, DateTime, func, Float
+from sqlalchemy import Integer, String, Column, ForeignKey, DateTime, Float
 from sqlalchemy.orm import relationship
 
 from api.db.DataBasse import Base
@@ -10,25 +10,17 @@ class ColourProduct(Base):
     product_id = Column(Integer, ForeignKey("products.id", ondelete="SET NULL"))
     colour_id = Column(Integer, ForeignKey("colour.id", ondelete="SET NULL"))
 
-
 class ColourModel(Base):
     __tablename__ = "colour"
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String)
-
-    # products = relationship("ProductModel", back_populates="colour")
-    colour_products = relationship("ColourProduct", secondary="colour_product",
-                                   primaryjoin="ColourModel.id == ColourProduct.colour_id",
-                                   secondaryjoin="ColourModel.id == ColourProduct.colour_id")
-
 
 class CategoryModel(Base):
     __tablename__ = "category"
     id = Column(Integer, primary_key=True)
     title = Column(String)
 
-    products = relationship("ProductModel", back_populates="category")
-
+    products_rel = relationship("ProductModel", back_populates="category_rel")
 
 class ProductModel(Base):
     __tablename__ = 'products'
@@ -44,9 +36,8 @@ class ProductModel(Base):
     price = Column(Float)
     images = relationship("ProductImage", back_populates="product")
 
-    category = relationship("CategoryModel", back_populates="products")
-    # colour_products = relationship("ColourProduct", back_populates="product_model")
-
+    category_rel = relationship("CategoryModel", back_populates="products_rel")
+    colour_products_rel = relationship("ColourProduct", backref="product")
 
 class ProductImage(Base):
     __tablename__ = 'product_images'
