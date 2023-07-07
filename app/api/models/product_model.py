@@ -9,7 +9,7 @@ class Promocode(Base):
     name = Column(String)
     procent = Column(Integer)
 
-    product_rel = relationship("ProductModel", back_populates='product_rel')
+    product_rel = relationship("ProductModel", back_populates='promocode_rel')
 
 
 
@@ -47,7 +47,7 @@ class ProductModel(Base):
     images = relationship("ProductImage", back_populates="product")
     category_rel = relationship("CategoryModel", back_populates="products_rel")
     colour_products_rel = relationship("ColourProduct", backref="product")
-    product_rel = relationship("Promocode", back_populates="product_rel")
+    promocode_rel = relationship("Promocode", back_populates="product_rel")
 
 
 class ProductImage(Base):

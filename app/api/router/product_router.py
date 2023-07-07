@@ -3,18 +3,19 @@ import shutil
 import uuid
 from typing import List
 
-from fastapi import APIRouter, Depends, status, UploadFile, File, Body
+from fastapi import APIRouter, Depends, status, UploadFile, File, Body, HTTPException
 from fastapi.responses import JSONResponse
 
 from api.schemas.product_schema import ProductImageSchema, \
     AStudentWorkCreateSchema, ProductSchemaReadV2
 from sqlalchemy.orm import Session, joinedload
 from api.db.session import get_db
-from api.models.product_model import ProductModel, ProductImage, CategoryModel, ColourModel, ColourProduct
+from api.models.product_model import ProductModel, ProductImage, CategoryModel, ColourModel, ColourProduct, Promocode
 from api.auth.login import get_current_staff
 from api.auth.admin_auth import get_user_exceptions
 from api.schemas.category_schema import CategorySchema
 from api.schemas.colour_schema import ProductColourSchema
+from api.schemas.promocode_schema import PromocodeReadSchema
 
 router = APIRouter(
     tags=["Product"],
@@ -59,16 +60,24 @@ async def create_product(
     product_model.created_at = product.created_at
     product_model.count = product.count
     product_model.procent_sale = product.procent_sale
-    # product_model.promocode = product.promocode
+    product_model.promocode_id = product.promocode_id
     product_model.price = product.price
-    # product_model.promocode_procent = product.promocode_procent
 
     query_to_category = db.query(CategoryModel).filter(CategoryModel.id == product_model.category_id).first()
 
+    query_to_promocode = db.query(Promocode).filter(Promocode.id == product_model.promocode_id).first()
+
+
     if query_to_category is None:
-        return JSONResponse(
+        raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            content="category is empty"
+            detail="category is empty"
+        )
+
+    if query_to_promocode is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="promocode is empty"
         )
 
     for x in product.colours:
@@ -122,8 +131,8 @@ async def create_product(
         created_at=product_model.created_at,
         count=product_model.count,
         procent_sale=product_model.procent_sale,
-        # promocode=product_model.promocode,
-        # promocode_procent=product_model.promocode_procent,
+        promocode=[PromocodeReadSchema(id= query_to_promocode.id,name=query_to_promocode.name,
+                                       procent=query_to_promocode.procent)],
         colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id,
                                     colour_id=colour.colour_id) for colour in colour_data],
         price=product_model.price
@@ -145,6 +154,7 @@ async def product_list(db: Session = Depends(get_db),
         .join(ProductImage, ProductModel.id == ProductImage.product_id)
         .join(CategoryModel, ProductModel.category_id == CategoryModel.id)
         .join(ColourProduct, ProductModel.id == ColourProduct.product_id)
+        .join(Promocode, ProductModel.promocode_id == Promocode.id)
         .options(joinedload(ProductModel.images))
         .all()
     )
@@ -161,6 +171,8 @@ async def product_list(db: Session = Depends(get_db),
             for colour in product.colour_products_rel
         ]
 
+
+
         product_data = ProductSchemaReadV2(
             id=product.id,
             title=product.title,
@@ -170,8 +182,7 @@ async def product_list(db: Session = Depends(get_db),
             created_at=product.created_at,
             count=product.count,
             procent_sale=product.procent_sale,
-            # promocode=product.promocode,
-            # promocode_procent=product.promocode_procent,
+            promocode=[product.promocode_rel],
             colour=colour,
             images=images,
             price=product.price
@@ -208,8 +219,7 @@ async def update_product(
         product_model.created_at = product.created_at
         product_model.count = product.count
         product_model.procent_sale = product.procent_sale
-        # product_model.promocode = product.promocode
-        # product_model.promocode_procent = product.promocode_procent
+        product_model.promocode_id = product.promocode_id
         product_model.price = product.price
         res.append(product_model)
 
@@ -261,6 +271,7 @@ async def update_product(
         db.add_all(colour_data)
         db.commit()
 
+        promocode = db.query(Promocode).filter(Promocode.id == product.promocode_id).first()
 
         product_data = ProductSchemaReadV2(
             id=product_model.id,
@@ -272,8 +283,7 @@ async def update_product(
             created_at=product_model.created_at,
             count=product_model.count,
             procent_sale=product_model.procent_sale,
-            # promocode=product_model.promocode,
-            # promocode_procent=product_model.promocode_procent,
+            promocode=[promocode],
             colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id, colour_id=colour.colour_id)
                     for colour in colour_data],
             price=product_model.price
@@ -339,6 +349,7 @@ async def product_list(id: int,
         .join(ProductImage, ProductModel.id == ProductImage.product_id)
         .join(CategoryModel, ProductModel.category_id == CategoryModel.id)
         .join(ColourProduct, ProductModel.id == ColourProduct.product_id)
+        .join(Promocode, ProductModel.promocode_id == Promocode.id)
         .options(joinedload(ProductModel.images))
         .filter(ProductModel.id == id)
         .first()
@@ -369,8 +380,7 @@ async def product_list(id: int,
         created_at=query.created_at,
         count=query.count,
         procent_sale=query.procent_sale,
-        # promocode=query.promocode,
-        # promocode_procent=query.promocode_procent,
+        promocode=[query.promocode_rel],
         colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id, colour_id=colour.colour_id)
                 for colour in colour_data],
         price=query.price

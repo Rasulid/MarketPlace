@@ -6,6 +6,7 @@ from typing import List, Optional
 
 from api.schemas.colour_schema import ProductColourSchema
 from api.schemas.category_schema import CategorySchema
+from api.schemas.promocode_schema import PromocodeReadSchema
 
 
 class ProductImageSchema(BaseModel):
@@ -20,10 +21,8 @@ class ProductSchema(BaseModel):
     created_at: datetime
     count: int
     procent_sale: int
-    promocode: str
     procent_sale: Optional[int]
-    # promocode: Optional[str]
-    # promocode_procent: Optional[int]
+    promocode_id: Optional[int]
     price: float
     colours: List[int]
 
@@ -38,8 +37,7 @@ class ProductSchemaReadV2(BaseModel):
     created_at: datetime
     count: int
     procent_sale: int
-    # promocode: str
-    # promocode_procent: int
+    promocode: List[PromocodeReadSchema]
     colour: List[ProductColourSchema]
     price: float
 
