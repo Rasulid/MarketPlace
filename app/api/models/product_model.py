@@ -8,7 +8,7 @@ class ColourProduct(Base):
     __tablename__ = 'colour_product'
     id = Column(Integer, primary_key=True, index=True)
     product_id = Column(Integer, ForeignKey("products.id", ondelete="CASCADE"))
-    colour_id = Column(Integer, ForeignKey("colour.id", ondelete="SET NULL"))
+    colour_id = Column(Integer, ForeignKey("colour.id", ondelete="CASCADE"))
 
 class ColourModel(Base):
     __tablename__ = "colour"
@@ -37,7 +37,7 @@ class ProductModel(Base):
     images = relationship("ProductImage", back_populates="product")
 
     category_rel = relationship("CategoryModel", back_populates="products_rel")
-    colour_products_rel = relationship("ColourProduct", backref="product", cascade="all, delete")
+    colour_products_rel = relationship("ColourProduct", backref="product")
 
 class ProductImage(Base):
     __tablename__ = 'product_images'
