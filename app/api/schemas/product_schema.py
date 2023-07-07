@@ -22,8 +22,8 @@ class ProductSchema(BaseModel):
     procent_sale: int
     promocode: str
     procent_sale: Optional[int]
-    promocode: Optional[str]
-    promocode_procent: Optional[int]
+    # promocode: Optional[str]
+    # promocode_procent: Optional[int]
     price: float
     colours: List[int]
 
@@ -38,8 +38,8 @@ class ProductSchemaReadV2(BaseModel):
     created_at: datetime
     count: int
     procent_sale: int
-    promocode: str
-    promocode_procent: int
+    # promocode: str
+    # promocode_procent: int
     colour: List[ProductColourSchema]
     price: float
 

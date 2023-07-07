@@ -4,7 +4,6 @@ import uuid
 from typing import List
 
 from fastapi import APIRouter, Depends, status, UploadFile, File, Body
-from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 
 from api.schemas.product_schema import ProductImageSchema, \
@@ -15,7 +14,7 @@ from api.models.product_model import ProductModel, ProductImage, CategoryModel, 
 from api.auth.login import get_current_staff
 from api.auth.admin_auth import get_user_exceptions
 from api.schemas.category_schema import CategorySchema
-from api.schemas.colour_schema import ColourSchema, ProductColourSchema
+from api.schemas.colour_schema import ProductColourSchema
 
 router = APIRouter(
     tags=["Product"],
@@ -61,9 +60,9 @@ async def create_product(
     product_model.created_at = product.created_at
     product_model.count = product.count
     product_model.procent_sale = product.procent_sale
-    product_model.promocode = product.promocode
+    # product_model.promocode = product.promocode
     product_model.price = product.price
-    product_model.promocode_procent = product.promocode_procent
+    # product_model.promocode_procent = product.promocode_procent
 
     query_to_category = db.query(CategoryModel).filter(CategoryModel.id == product_model.category_id).first()
 
@@ -124,8 +123,8 @@ async def create_product(
         created_at=product_model.created_at,
         count=product_model.count,
         procent_sale=product_model.procent_sale,
-        promocode=product_model.promocode,
-        promocode_procent=product_model.promocode_procent,
+        # promocode=product_model.promocode,
+        # promocode_procent=product_model.promocode_procent,
         colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id,
                                     colour_id=colour.colour_id) for colour in colour_data],
         price=product_model.price
@@ -172,8 +171,8 @@ async def product_list(db: Session = Depends(get_db),
             created_at=product.created_at,
             count=product.count,
             procent_sale=product.procent_sale,
-            promocode=product.promocode,
-            promocode_procent=product.promocode_procent,
+            # promocode=product.promocode,
+            # promocode_procent=product.promocode_procent,
             colour=colour,
             images=images,
             price=product.price
@@ -210,8 +209,8 @@ async def update_product(
         product_model.created_at = product.created_at
         product_model.count = product.count
         product_model.procent_sale = product.procent_sale
-        product_model.promocode = product.promocode
-        product_model.promocode_procent = product.promocode_procent
+        # product_model.promocode = product.promocode
+        # product_model.promocode_procent = product.promocode_procent
         product_model.price = product.price
         res.append(product_model)
 
@@ -274,8 +273,8 @@ async def update_product(
             created_at=product_model.created_at,
             count=product_model.count,
             procent_sale=product_model.procent_sale,
-            promocode=product_model.promocode,
-            promocode_procent=product_model.promocode_procent,
+            # promocode=product_model.promocode,
+            # promocode_procent=product_model.promocode_procent,
             colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id, colour_id=colour.colour_id)
                     for colour in colour_data],
             price=product_model.price
@@ -371,8 +370,8 @@ async def product_list(id: int,
         created_at=query.created_at,
         count=query.count,
         procent_sale=query.procent_sale,
-        promocode=query.promocode,
-        promocode_procent=query.promocode_procent,
+        # promocode=query.promocode,
+        # promocode_procent=query.promocode_procent,
         colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id, colour_id=colour.colour_id)
                 for colour in colour_data],
         price=query.price

@@ -3,6 +3,15 @@ from sqlalchemy.orm import relationship
 
 from api.db.DataBasse import Base
 
+class Promocode(Base):
+    __tablename__ = "promocode"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
+    procent = Column(Integer)
+
+    product_rel = relationship("ProductModel", back_populates='product_rel')
+
+
 
 class ColourProduct(Base):
     __tablename__ = 'colour_product'
@@ -32,13 +41,14 @@ class ProductModel(Base):
     created_at = Column(DateTime)
     count = Column(Integer)
     procent_sale = Column(Integer)
-    promocode = Column(String)
+    promocode_id = Column(Integer, ForeignKey('promocode.id', ondelete='SET NULL'))
     price = Column(Float)
-    promocode_procent = Column(Integer)
-    images = relationship("ProductImage", back_populates="product")
 
+    images = relationship("ProductImage", back_populates="product")
     category_rel = relationship("CategoryModel", back_populates="products_rel")
     colour_products_rel = relationship("ColourProduct", backref="product")
+    product_rel = relationship("Promocode", back_populates="product_rel")
+
 
 class ProductImage(Base):
     __tablename__ = 'product_images'

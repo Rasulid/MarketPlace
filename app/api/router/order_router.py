@@ -22,7 +22,7 @@ async def create_order(
         order_schema: OrderSchema,
         product_id: int,
         user_id: int,
-        promocode:str = Body(default="None"),
+        # promocode:str = Body(default="None"),
         db: Session = Depends(get_db)
 ):
     query = db.query(ProductModel).filter(ProductModel.id == product_id).first()
@@ -45,15 +45,15 @@ async def create_order(
         user_id=user_id,
         count=order_schema.count
     )
-    query_p_p = query.promocode_procent
+    # query_p_p = query.promocode_procent
 
-    if query.promocode == promocode:
-        total_p = (order.total_price * query_p_p) / 100
-    else:
-        total_p = order.total_price
+    # if query.promocode == promocode:
+    #     total_p = (order.total_price * query_p_p) / 100
+    # else:
+    #     total_p = order.total_price
 
     query.count -= order.count
-    order.total_price -= total_p
+    # order.total_price -= total_p
 
     db.add_all([query, order])
     db.commit()
