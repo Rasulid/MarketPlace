@@ -131,59 +131,12 @@ async def create_product(
 
     return product_data
 
-# @router.get("/list-product", response_model=List[ProductSchemaReadV2])
-# async def product_list(db: Session = Depends(get_db),
-#                        # login: dict = Depends(get_current_staff)):
-#                        ):
-#     # if login is None:
-#     #     return get_user_exceptions()
-#
-#     query = (
-#         db.query(ProductModel)
-#         .join(ProductImage, ProductModel.id == ProductImage.product_id)
-#         .join(CategoryModel, ProductModel.category_id == CategoryModel.id)
-#         .join(ColourProduct, ProductModel.id == ColourProduct.product_id)
-#         .options(joinedload(ProductModel.images))
-#         .all()
-#     )
-#     products = []
-#     for product in query:
-#         images = [
-#             ProductImageSchema(file_name=image.file_name, file_path=image.file_path)
-#             for image in product.images]
-#
-#         category = [
-#             CategorySchema(id=category.id, title=category.name)
-#             for category in product.category_rel
-#         ]
-#
-#         colour = [
-#             ColourSchema(id=colour.id, title=colour.title)
-#             for colour in product.colour
-#         ]
-#
-#         product_data = ProductSchemaReadV2(
-#             title=product.title,
-#             description=product.description,
-#             category=category,
-#             owner=product.owner,
-#             created_at=product.created_at,
-#             count=product.count,
-#             procent_sale=product.procent_sale,
-#             promocode=product.promocode,
-#             colour=colour,
-#             images=images,
-#             price=product.price
-#         )
-#         products.append(product_data)
-#
-#     return products
-
 
 @router.get("/list-product", response_model=List[ProductSchemaReadV2])
 async def product_list(db: Session = Depends(get_db),
-                       # login: dict = Depends(get_current_staff)):
+                       # login: dict = Depends(get_current_staff)
                        ):
+
     # if login is None:
     #     return get_user_exceptions()
 
@@ -233,12 +186,12 @@ async def update_product(
         product: AStudentWorkCreateSchema,
         db: Session = Depends(get_db),
         file: List[UploadFile] = File(),
-        login: dict = Depends(get_current_staff)
+        # login: dict = Depends(get_current_staff)
 ):
-    if login is None:
-        return get_user_exceptions()
+    # if login is None:
+    #     return get_user_exceptions()
 
-    owner_id = login.get("user_id")
+    owner_id = 1  # login.get("user_id")
     res = []
     upload_image = await upload_img(file)
 
@@ -248,33 +201,25 @@ async def update_product(
 
     if product_model is not None:
         product_model.title = product.title
+        product_model.owner = owner_id
         product_model.description = product.description
-        product_model.category = product.category
-        product_model.owner = 1
+        product_model.category_id = product.category_id
         product_model.created_at = product.created_at
         product_model.count = product.count
         product_model.procent_sale = product.procent_sale
         product_model.promocode = product.promocode
-        product_model.colour = product.colour
         product_model.price = product.price
-
         res.append(product_model)
 
-        file_path = "static/image"  # Make sure to include the appropriate file extension
-
-        # Delete all existing images for the product
+        file_path = "static/image"
         image_models = db.query(ProductImage).filter(ProductImage.product_id == id).all()
-
         for image in image_models:
             if image.file_name:
                 file_name = os.path.join(file_path, image.file_name)
                 if os.path.exists(file_name):
                     os.remove(file_name)
-
-        # Delete all existing images from the database
         db.query(ProductImage).filter(ProductImage.product_id == id).delete()
 
-        # Create new images
         new_image_models = []
         for x in upload_image:
             new_image = ProductImage(
@@ -284,11 +229,9 @@ async def update_product(
             )
             new_image_models.append(new_image)
 
-        # Add new images to the database session
         db.add_all(new_image_models)
         db.commit()
 
-        # Update the product images with the new ones
         product_model.images = new_image_models
 
         db.add_all(result)
@@ -298,26 +241,48 @@ async def update_product(
 
         images_data = []
         for image in new_image_models:
-            image_data = ProductImageSchema(file_name=image.file_name,
-                                            file_path=image.file_path)
+            image_data = ProductImageSchema(
+                file_name=image.file_name,
+                file_path=image.file_path
+            )
             images_data.append(image_data)
 
+        query_to_category = db.query(CategoryModel).filter(CategoryModel.id == product.category_id).first()
+        colour_data = db.query(ColourProduct).filter(ColourProduct.product_id == id).delete()
+        # colour_data = db.query(ColourProduct).filter(ColourProduct.product_id == id).()
+        colour_data = []
+        for x in product.colours:
+            colour_products = ColourProduct()
+            colour_products.product_id = product_model.id
+            colour_products.colour_id = x
+            colour_data.append(colour_products)
+
+        db.add_all(colour_data)
+        db.commit()
+
+
         product_data = ProductSchemaReadV2(
+            id=product_model.id,
             title=product.title,
             description=product.description,
-            category=product.category,
+            category=[CategorySchema(id=product.category_id, title=query_to_category.title)],
             images=images_data,
             owner=product_model.owner,
             created_at=product_model.created_at,
             count=product_model.count,
             procent_sale=product_model.procent_sale,
             promocode=product_model.promocode,
-            colour=product_model.colour,
+            colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id, colour_id=colour.colour_id)
+                    for colour in colour_data],
             price=product_model.price
         )
+
         return product_data
 
-    return product_model
+    return JSONResponse(
+        status_code=status.HTTP_404_NOT_FOUND,
+        content="Product not found"
+    )
 
 
 @router.delete("/delete/{id}")
@@ -346,10 +311,8 @@ async def delete_product(id: int,
             if os.path.exists(file_name):
                 os.remove(file_name)
 
-    # Удаление записей о фотографиях в базе данных
     db.query(ProductImage).filter(ProductImage.product_id == id).delete()
 
-    # Удаление товара
     query = db.query(ProductModel) \
         .filter(ProductModel.id == id) \
         .delete()
@@ -361,7 +324,7 @@ async def delete_product(id: int,
     )
 
 
-@router.get("/{id}/", response_model=List[ProductSchemaReadV2])
+@router.get("get/{id}/", response_model=List[ProductSchemaReadV2])
 async def product_list(id: int,
                        db: Session = Depends(get_db),
                        login: dict = Depends(get_current_staff)):
