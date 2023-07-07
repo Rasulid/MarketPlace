@@ -63,6 +63,7 @@ async def create_product(
     product_model.procent_sale = product.procent_sale
     product_model.promocode = product.promocode
     product_model.price = product.price
+    product_model.promocode_procent = product.promocode_procent
 
     query_to_category = db.query(CategoryModel).filter(CategoryModel.id == product_model.category_id).first()
 
@@ -124,6 +125,7 @@ async def create_product(
         count=product_model.count,
         procent_sale=product_model.procent_sale,
         promocode=product_model.promocode,
+        promocode_procent=product_model.promocode_procent,
         colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id,
                                     colour_id=colour.colour_id) for colour in colour_data],
         price=product_model.price
@@ -171,6 +173,7 @@ async def product_list(db: Session = Depends(get_db),
             count=product.count,
             procent_sale=product.procent_sale,
             promocode=product.promocode,
+            promocode_procent=product.promocode_procent,
             colour=colour,
             images=images,
             price=product.price
@@ -208,6 +211,7 @@ async def update_product(
         product_model.count = product.count
         product_model.procent_sale = product.procent_sale
         product_model.promocode = product.promocode
+        product_model.promocode_procent = product.promocode_procent
         product_model.price = product.price
         res.append(product_model)
 
@@ -271,6 +275,7 @@ async def update_product(
             count=product_model.count,
             procent_sale=product_model.procent_sale,
             promocode=product_model.promocode,
+            promocode_procent=product_model.promocode_procent,
             colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id, colour_id=colour.colour_id)
                     for colour in colour_data],
             price=product_model.price
@@ -367,6 +372,7 @@ async def product_list(id: int,
         count=query.count,
         procent_sale=query.procent_sale,
         promocode=query.promocode,
+        promocode_procent=query.promocode_procent,
         colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id, colour_id=colour.colour_id)
                 for colour in colour_data],
         price=query.price

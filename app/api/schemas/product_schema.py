@@ -1,11 +1,10 @@
 import json
 from datetime import datetime
-from typing import List
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import List, Optional
 
-from api.schemas.colour_schema import ColourSchema, ProductColourSchema
+from api.schemas.colour_schema import ProductColourSchema
 from api.schemas.category_schema import CategorySchema
 
 
@@ -24,6 +23,7 @@ class ProductSchema(BaseModel):
     promocode: str
     procent_sale: Optional[int]
     promocode: Optional[str]
+    promocode_procent: Optional[int]
     price: float
     colours: List[int]
 
@@ -39,6 +39,7 @@ class ProductSchemaReadV2(BaseModel):
     count: int
     procent_sale: int
     promocode: str
+    promocode_procent: int
     colour: List[ProductColourSchema]
     price: float
 

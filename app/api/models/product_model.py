@@ -34,6 +34,7 @@ class ProductModel(Base):
     procent_sale = Column(Integer)
     promocode = Column(String)
     price = Column(Float)
+    promocode_procent = Column(Integer)
     images = relationship("ProductImage", back_populates="product")
 
     category_rel = relationship("CategoryModel", back_populates="products_rel")

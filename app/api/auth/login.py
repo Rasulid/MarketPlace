@@ -79,7 +79,9 @@ async def get_current_user(token: str = Depends(oauth2_bearer),
 
 
     if res is None:
-        raise for_user_exception()
+        res_2 = db.query(AdminModel).filter(AdminModel.gmail == gmail).first()
+        if res_2 is None:
+            raise for_user_exception()
 
     if gmail is None or user_id is None:
         raise get_user_exceptions()

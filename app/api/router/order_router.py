@@ -1,7 +1,8 @@
-from typing import List
+from typing import List, Optional
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Body
 from fastapi.responses import JSONResponse
+from pydantic import Field
 from sqlalchemy.orm import Session, joinedload
 
 from api.db.session import get_db
@@ -15,13 +16,13 @@ router = APIRouter(tags=['Orders'],
                    prefix="/api/orders")
 
 
-
-
 @router.post('/create', response_model=OrderSchemaRead)
 async def create_order(
+
         order_schema: OrderSchema,
         product_id: int,
         user_id: int,
+        promocode:str = Body(default="None"),
         db: Session = Depends(get_db)
 ):
     query = db.query(ProductModel).filter(ProductModel.id == product_id).first()
@@ -44,8 +45,15 @@ async def create_order(
         user_id=user_id,
         count=order_schema.count
     )
+    query_p_p = query.promocode_procent
+
+    if query.promocode == promocode:
+        total_p = (order.total_price * query_p_p) / 100
+    else:
+        total_p = order.total_price
 
     query.count -= order.count
+    order.total_price -= total_p
 
     db.add_all([query, order])
     db.commit()
@@ -67,6 +75,7 @@ async def create_order(
         ))
 
     response = OrderSchemaRead(
+        id=order.id,
         payment_method=order.payment_method,
         total_price=order.total_price,
         order_status=order.order_status,
@@ -77,15 +86,17 @@ async def create_order(
     return response
 
 
-@router.get('/orders/{id}', response_model=List[OrderSchemaRead])
+@router.get('/orders-list/{id}', response_model=List[OrderSchemaRead])
 async def order_list_by_user_id(id: int, db: Session = Depends(get_db),
-                     login: dict = Depends(get_current_user)):
-    query = (
-        db.query(Order, OrderedProduct)
-        .join(OrderedProduct, Order.id == OrderedProduct.order_id)
-        .filter(Order.user_id == id)
-        .all()
-    )
+                                # login: dict = Depends(get_current_user)
+                                ):
+    query = db.query(Order, OrderedProduct)\
+             .join(OrderedProduct, Order.id == OrderedProduct.order_id)\
+             .filter(Order.user_id == id) \
+             .all()
+
+
+    print(query)
 
     orders_with_products = []
     current_order = None
@@ -94,6 +105,7 @@ async def order_list_by_user_id(id: int, db: Session = Depends(get_db),
         if current_order is None or current_order.id != order.id:
             if current_order is not None:
                 orders_with_products.append(OrderSchemaRead(
+                    id=current_order.id,
                     payment_method=current_order.payment_method,
                     total_price=current_order.total_price,
                     order_status=current_order.order_status,
@@ -109,6 +121,7 @@ async def order_list_by_user_id(id: int, db: Session = Depends(get_db),
 
     if current_order is not None:
         orders_with_products.append(OrderSchemaRead(
+            id=current_order.id,
             payment_method=current_order.payment_method,
             total_price=current_order.total_price,
             order_status=current_order.order_status,

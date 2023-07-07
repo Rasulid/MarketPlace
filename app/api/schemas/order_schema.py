@@ -19,6 +19,7 @@ class OrderedProductSchema(BaseModel):
 
 
 class OrderSchemaRead(BaseModel):
+    id: int
     payment_method: PaymentMethod
     total_price: float
     order_status: OrderStatus
