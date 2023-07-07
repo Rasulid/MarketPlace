@@ -18,7 +18,7 @@ from api.schemas.colour_schema import ProductColourSchema
 
 router = APIRouter(
     tags=["Product"],
-    prefix="/api/product"
+    prefix="/api/products"
 )
 
 
@@ -33,7 +33,6 @@ async def upload_img(file: List[UploadFile] = File(...)):
     return image_list
 
 
-router = APIRouter()
 
 
 @router.post("/create", response_model=ProductSchemaReadV2)
