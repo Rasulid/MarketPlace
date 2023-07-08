@@ -12,6 +12,7 @@ class Promocode(Base):
 
     category_rel = relationship("CategoryModel", back_populates="promocode")
     product_rel = relationship("ProductModel", back_populates='promocode_rel')
+    order_rel = relationship("Order", back_populates='promocode_rel')
 
 
 

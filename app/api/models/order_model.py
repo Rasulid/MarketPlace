@@ -18,6 +18,9 @@ class Order(Base):
     order_status = Column(String)
     user_id = Column(Integer, ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
     count = Column(Integer)
+    promocode = Column(Integer, ForeignKey('promocode.id', ondelete='SET NULL'))
+
+    promocode_rel = relationship("Promocode", back_populates="order_rel")
     ordered_products = relationship("OrderedProduct", secondary="ordered_products",
                                     primaryjoin="Order.id == OrderedProduct.order_id",
                                     secondaryjoin="Order.id == OrderedProduct.order_id")

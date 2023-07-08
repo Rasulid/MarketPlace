@@ -2,6 +2,8 @@ from enum import Enum
 from pydantic import BaseModel
 from typing import List
 
+from api.schemas.promocode_schema import PromocodeReadSchema
+
 
 class PaymentMethod(str, Enum):
     cash = 'cash'
@@ -25,6 +27,7 @@ class OrderSchemaRead(BaseModel):
     order_status: OrderStatus
     user_id: int
     order_products: List[OrderedProductSchema]
+    promocode: List[PromocodeReadSchema]
 
     class Config:
         orm_mode = True
@@ -34,3 +37,4 @@ class OrderSchema(BaseModel):
     payment_method: PaymentMethod
     order_status: OrderStatus
     count: int
+    promocode: int
