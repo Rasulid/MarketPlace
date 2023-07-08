@@ -8,7 +8,9 @@ class Promocode(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     procent = Column(Integer)
+    category = Column(Integer, ForeignKey("category.id", ondelete="CASCADE"), nullable=True)
 
+    category_rel = relationship("CategoryModel", back_populates="promocode")
     product_rel = relationship("ProductModel", back_populates='promocode_rel')
 
 
@@ -29,6 +31,7 @@ class CategoryModel(Base):
     id = Column(Integer, primary_key=True)
     title = Column(String)
 
+    promocode = relationship("Promocode", back_populates='category_rel')
     products_rel = relationship("ProductModel", back_populates="category_rel")
 
 class ProductModel(Base):
