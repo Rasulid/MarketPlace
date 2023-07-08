@@ -34,14 +34,12 @@ async def upload_img(file: List[UploadFile] = File(...)):
     return image_list
 
 
-
-
 @router.post("/create", response_model=ProductSchemaReadV2)
 async def create_product(
-    product: AStudentWorkCreateSchema,
-    db: Session = Depends(get_db),
-    file: List[UploadFile] = File(),
-    login: dict = Depends(get_current_staff),
+        product: AStudentWorkCreateSchema,
+        db: Session = Depends(get_db),
+        file: List[UploadFile] = File(),
+        login: dict = Depends(get_current_staff),
 ):
     if login is None:
         return get_user_exceptions()
@@ -66,7 +64,6 @@ async def create_product(
     query_to_category = db.query(CategoryModel).filter(CategoryModel.id == product_model.category_id).first()
 
     query_to_promocode = db.query(Promocode).filter(Promocode.id == product_model.promocode_id).first()
-
 
     if query_to_category is None:
         raise HTTPException(
@@ -131,8 +128,8 @@ async def create_product(
         created_at=product_model.created_at,
         count=product_model.count,
         procent_sale=product_model.procent_sale,
-        promocode=[PromocodeReadSchema(id= query_to_promocode.id,name=query_to_promocode.name,
-                                       procent=query_to_promocode.procent)],
+        promocode=[PromocodeReadSchema(id=query_to_promocode.id, name=query_to_promocode.name,
+                                       procent=query_to_promocode.procent, category=[query_to_promocode.category_rel])],
         colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id,
                                     colour_id=colour.colour_id) for colour in colour_data],
         price=product_model.price
@@ -145,7 +142,6 @@ async def create_product(
 async def product_list(db: Session = Depends(get_db),
                        login: dict = Depends(get_current_staff)
                        ):
-
     if login is None:
         return get_user_exceptions()
 
@@ -171,7 +167,10 @@ async def product_list(db: Session = Depends(get_db),
             for colour in product.colour_products_rel
         ]
 
-
+        promocode = [PromocodeReadSchema(id=product.promocode_rel.id,
+                                         name=product.promocode_rel.name,
+                                         procent=product.promocode_rel.procent,
+                                         category=[product.promocode_rel.category_rel])]
 
         product_data = ProductSchemaReadV2(
             id=product.id,
@@ -182,7 +181,7 @@ async def product_list(db: Session = Depends(get_db),
             created_at=product.created_at,
             count=product.count,
             procent_sale=product.procent_sale,
-            promocode=[product.promocode_rel],
+            promocode=promocode,
             colour=colour,
             images=images,
             price=product.price
@@ -283,7 +282,8 @@ async def update_product(
             created_at=product_model.created_at,
             count=product_model.count,
             procent_sale=product_model.procent_sale,
-            promocode=[promocode],
+            promocode=[PromocodeReadSchema(id=promocode.id, name=promocode.name,
+                                           procent=promocode.procent, category=[promocode.category_rel])],
             colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id, colour_id=colour.colour_id)
                     for colour in colour_data],
             price=product_model.price
@@ -380,7 +380,10 @@ async def product_list(id: int,
         created_at=query.created_at,
         count=query.count,
         procent_sale=query.procent_sale,
-        promocode=[query.promocode_rel],
+        promocode=[PromocodeReadSchema(id=query.promocode_rel.id,
+                                         name=query.promocode_rel.name,
+                                         procent=query.promocode_rel.procent,
+                                         category=[query.promocode_rel.category_rel])],
         colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id, colour_id=colour.colour_id)
                 for colour in colour_data],
         price=query.price
