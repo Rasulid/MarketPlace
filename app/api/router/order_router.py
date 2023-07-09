@@ -1,31 +1,35 @@
-from typing import List, Optional
+from typing import List
 
-from fastapi import APIRouter, Depends, status, Body
+from fastapi import APIRouter, Depends, status, Body, HTTPException
 from fastapi.responses import JSONResponse
-from pydantic import Field
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 
 from api.db.session import get_db
-from api.models.product_model import ProductModel
+from api.models.product_model import ProductModel, Promocode
 from api.models.order_model import Order, OrderedProduct
 from api.schemas.order_schema import OrderedProductSchema, OrderSchema, OrderSchemaRead
 from api.models.user_model import UserModel
 from api.auth.login import get_current_user
+from api.schemas.promocode_schema import  PromocodeReadSchemaV2
 
 router = APIRouter(tags=['Orders'],
                    prefix="/api/orders")
 
+def find_procent(cash, procent) -> int:
+    result_price = cash * (procent / 100)
+    return result_price
 
 @router.post('/create', response_model=OrderSchemaRead)
 async def create_order(
-
         order_schema: OrderSchema,
         product_id: int,
         user_id: int,
-        db: Session = Depends(get_db)
+        db: Session = Depends(get_db),
+        promocode_name: str = Body(default="NONE")
 ):
     query = db.query(ProductModel).filter(ProductModel.id == product_id).first()
     user = db.query(UserModel).filter(UserModel.id == user_id).first()
+    query_to_promocode = db.query(Promocode).filter(Promocode.name == promocode_name).first()
     if query is None or user is None:
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -36,6 +40,11 @@ async def create_order(
             status_code=status.HTTP_404_NOT_FOUND,
             content="there are not enough products available"
         )
+    if query_to_promocode is None:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content="Invalid Promocode"
+        )
 
     order = Order(
         payment_method=order_schema.payment_method,
@@ -43,18 +52,28 @@ async def create_order(
         order_status=order_schema.order_status,
         user_id=user_id,
         count=order_schema.count,
-        promocode=order_schema.promocode
+        promocode=query_to_promocode.id
 
     )
-    # query_p_p = query.promocode_procent
+    order_TP = order.total_price
+    promocode_price = query_to_promocode.procent
+    result_price = 0
 
-    # if query.promocode == promocode:
-    #     total_p = (order.total_price * query_p_p) / 100
-    # else:
-    #     total_p = order.total_price
+    if query_to_promocode.name == 'ALL':
+        result_price = find_procent(order_TP, promocode_price)
+    elif query_to_promocode.name == promocode_name:
+        result_price = find_procent(order_TP, promocode_price)
+    elif query_to_promocode.name == 'NONE':
+        result_price = find_procent(order_TP, promocode_price)
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail="Promocode not found")
 
+    order.total_price = result_price
     query.count -= order.count
-    # order.total_price -= total_p
+
+    if query.procent_sale is not None:
+        order.total_price = find_procent(order.total_price, query.procent_sale)
 
     db.add_all([query, order])
     db.commit()
@@ -81,7 +100,10 @@ async def create_order(
         total_price=order.total_price,
         order_status=order.order_status,
         user_id=order.user_id,
-        order_products=order_products
+        order_products=order_products,
+        promocode=[PromocodeReadSchemaV2(id=query_to_promocode.id,
+                                         name=query_to_promocode.name,
+                                         procent=query_to_promocode.procent)]
     )
 
     return response
@@ -89,20 +111,20 @@ async def create_order(
 
 @router.get('/orders-list/{id}', response_model=List[OrderSchemaRead])
 async def order_list_by_user_id(id: int, db: Session = Depends(get_db),
-                                # login: dict = Depends(get_current_user)
+                                login: dict = Depends(get_current_user)
                                 ):
-    query = db.query(Order, OrderedProduct)\
-             .join(OrderedProduct, Order.id == OrderedProduct.order_id)\
-             .filter(Order.user_id == id) \
-             .all()
+    query = db.query(Order, OrderedProduct) \
+        .join(OrderedProduct, Order.id == OrderedProduct.order_id) \
+        .join(Promocode, Order.promocode == Promocode.id)\
+        .filter(Order.user_id == id) \
+        .all()
 
-
-    print(query)
 
     orders_with_products = []
     current_order = None
     current_ordered_products = []
     for order, ordered_product in query:
+        print(122,order.promocode_rel)
         if current_order is None or current_order.id != order.id:
             if current_order is not None:
                 orders_with_products.append(OrderSchemaRead(
@@ -111,7 +133,10 @@ async def order_list_by_user_id(id: int, db: Session = Depends(get_db),
                     total_price=current_order.total_price,
                     order_status=current_order.order_status,
                     user_id=current_order.user_id,
-                    order_products=current_ordered_products
+                    order_products=current_ordered_products,
+                    promocode=[PromocodeReadSchemaV2(id=order.promocode_rel.id,
+                                         name=order.promocode_rel.name,
+                                         procent=order.promocode_rel.procent)]
                 ))
             current_order = order
             current_ordered_products = []
@@ -127,7 +152,10 @@ async def order_list_by_user_id(id: int, db: Session = Depends(get_db),
             total_price=current_order.total_price,
             order_status=current_order.order_status,
             user_id=current_order.user_id,
-            order_products=current_ordered_products
+            order_products=current_ordered_products,
+            promocode=[PromocodeReadSchemaV2(id=order.promocode_rel.id,
+                                             name=order.promocode_rel.name,
+                                             procent=order.promocode_rel.procent)]
         ))
 
     return orders_with_products

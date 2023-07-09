@@ -19,3 +19,8 @@ class PromocodeReadSchema(BaseModel):
 
     class Config:
         orm_mode = True
+
+class PromocodeReadSchemaV2(BaseModel):
+    id: int
+    name: str
+    procent: int

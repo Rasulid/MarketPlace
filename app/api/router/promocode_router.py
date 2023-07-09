@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from api.db.session import get_db
-from api.models.product_model import Promocode, CategoryModel
+from api.models.product_model import Promocode
 from api.schemas.promocode_schema import PromocodeSchema, PromocodeReadSchema
 from api.auth.login import get_current_staff
 

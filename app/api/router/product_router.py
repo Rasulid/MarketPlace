@@ -3,7 +3,7 @@ import shutil
 import uuid
 from typing import List
 
-from fastapi import APIRouter, Depends, status, UploadFile, File, Body, HTTPException
+from fastapi import APIRouter, Depends, status, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
 
 from api.schemas.product_schema import ProductImageSchema, \

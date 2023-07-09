@@ -6,8 +6,7 @@ from fastapi.responses import JSONResponse
 from api.db.session import get_db
 from api.schemas.users_schemas import User_Schema
 from api.models.user_model import UserModel
-from api.db.DataBasse import SessionLocal
-from api.auth.admin_auth import password_hash, verify_password
+from api.auth.admin_auth import password_hash
 from api.auth.login import get_user_exceptions, get_current_staff, get_current_user
 
 router = FastAPI(title="Users")
