@@ -4,4 +4,4 @@ import psycopg2
 
 # connection = psycopg2.connect(database=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST, port=DB_PORT)
 if __name__ == '__main__':
-    uvicorn.run("api.main:app", port=8000, reload=True)
+    uvicorn.run("api.main:app", host='0.0.0.0', port=8000, reload=True)
