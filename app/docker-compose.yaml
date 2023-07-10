@@ -20,7 +20,7 @@
 #        - 9999:8000
 #      depends_on:
 #        - db
-  version: "3.7"
+  version: "3.3"
 
   services:
     db:

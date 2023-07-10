@@ -15,7 +15,7 @@ ALGORITHM = AlGORITHM
 async def get_current_admin(token: str = Depends(oauth2_bearer),
                             db: Session = Depends(get_db)):
     try:
-        pyload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        pyload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
     except ExpiredSignatureError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Update token")
 
@@ -42,7 +42,7 @@ async def get_current_admin(token: str = Depends(oauth2_bearer),
 async def get_current_staff(token: str = Depends(oauth2_bearer),
                             db: Session = Depends(get_db)):
     try:
-        pyload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        pyload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
     except ExpiredSignatureError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Update token")
 
@@ -68,7 +68,7 @@ async def get_current_staff(token: str = Depends(oauth2_bearer),
 async def get_current_user(token: str = Depends(oauth2_bearer),
                            db: Session = Depends(get_db)):
     try:
-        pyload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        pyload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
     except ExpiredSignatureError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Update token")
 
