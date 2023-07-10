@@ -1,17 +1,3 @@
-#FROM python:3.10
-#
-#WORKDIR /app
-#
-#COPY . .
-#
-#RUN pip install -r requirements.txt
-#
-#ENV PYTHONPATH "${PYTHONPATH}:/app/api"
-#
-#RUN chmod a+x api/app.sh
-#
-#CMD [ "python3", "main.py" ]
-
 FROM python:3.10
 
 WORKDIR /app
@@ -32,4 +18,4 @@ RUN chmod a+x api/app.sh
 
 WORKDIR /app/api
 
-CMD alembic upgrade head && gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000
+CMD alembic upgrade head && uvicorn main:app --host "0.0.0.0" --port 8000 --workers 4 --reload
