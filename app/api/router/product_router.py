@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, status, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
 
 from api.schemas.product_schema import ProductImageSchema, \
-    AStudentWorkCreateSchema, ProductSchemaReadV2
+    AStudentWorkCreateSchema, ProductSchemaReadV2, ProductSchemaSearch
 from sqlalchemy.orm import Session, joinedload
 from api.db.session import get_db
 from api.models.product_model import ProductModel, ProductImage, CategoryModel, ColourModel, ColourProduct, Promocode
@@ -32,6 +32,13 @@ async def upload_img(file: List[UploadFile] = File(...)):
             append_for_db = ProductImageSchema(file_name=img.filename, file_path=f"static/image")
         image_list.append(append_for_db)
     return image_list
+
+
+"""
+------------------------------------------------------------------------------------------------------------------
+Create a new Product
+
+"""
 
 
 @router.post("/create", response_model=ProductSchemaReadV2)
@@ -138,6 +145,13 @@ async def create_product(
     return product_data
 
 
+"""
+------------------------------------------------------------------------------------------------------------------
+get list of products
+
+"""
+
+
 @router.get("/list-product", response_model=List[ProductSchemaReadV2])
 async def product_list(db: Session = Depends(get_db),
                        login: dict = Depends(get_current_staff)
@@ -189,6 +203,13 @@ async def product_list(db: Session = Depends(get_db),
         products.append(product_data)
 
     return products
+
+
+"""
+------------------------------------------------------------------------------------------------------------------
+get Update by ID
+
+"""
 
 
 @router.put("/update/{id}")
@@ -297,6 +318,13 @@ async def update_product(
     )
 
 
+"""
+------------------------------------------------------------------------------------------------------------------
+get delete by ID
+
+"""
+
+
 @router.delete("/delete/{id}")
 async def delete_product(id: int,
                          db: Session = Depends(get_db),
@@ -334,6 +362,13 @@ async def delete_product(id: int,
         status_code=status.HTTP_204_NO_CONTENT,
         content="Product deleted successfully"
     )
+
+
+"""
+------------------------------------------------------------------------------------------------------------------
+get product by ID
+
+"""
 
 
 @router.get("/get/{id}/", response_model=List[ProductSchemaReadV2])
@@ -381,12 +416,40 @@ async def product_list(id: int,
         count=query.count,
         procent_sale=query.procent_sale,
         promocode=[PromocodeReadSchema(id=query.promocode_rel.id,
-                                         name=query.promocode_rel.name,
-                                         procent=query.promocode_rel.procent,
-                                         category=[query.promocode_rel.category_rel])],
+                                       name=query.promocode_rel.name,
+                                       procent=query.promocode_rel.procent,
+                                       category=[query.promocode_rel.category_rel])],
         colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id, colour_id=colour.colour_id)
                 for colour in colour_data],
         price=query.price
     )
 
     return [product_data]
+
+
+"""
+------------------------------------------------------------------------------------------------------------------
+Search product by title
+
+"""
+
+
+@router.get('/search_product/', tags=["search"], response_model=List[ProductSchemaSearch])
+async def search_product(title: str, db=Depends(get_db)):
+    query = db.query(ProductModel).filter(ProductModel.title == title).options(joinedload(ProductModel.images)).all()
+    product_data = []
+
+    for product in query:
+        images = [
+            ProductImageSchema(file_name=image.file_name, file_path=image.file_path)
+            for image in product.images
+        ]
+
+        s = ProductSchemaSearch(
+            title=product.title,
+            images=images,
+            price=product.price
+        )
+        product_data.append(s)
+
+    return product_data

@@ -9,9 +9,17 @@ from api.schemas.category_schema import CategorySchema
 from api.schemas.promocode_schema import PromocodeReadSchema
 
 
+
+
 class ProductImageSchema(BaseModel):
     file_name: str
     file_path: str
+
+
+class ProductSchemaSearch(BaseModel):
+    title: str
+    images:List[ProductImageSchema]
+    price: int
 
 
 class ProductSchema(BaseModel):
