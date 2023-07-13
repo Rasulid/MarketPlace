@@ -12,10 +12,6 @@ class User_Schema(BaseModel):
     region: str
     gmail: str
     password: str
-    created_at: datetime
-    is_active: bool = True
-    is_verified: bool = False
-    update_at: datetime
 
     class Config:
         orm_mode = True

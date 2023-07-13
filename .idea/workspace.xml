@@ -6,7 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="c04f7781-be60-4d61-b24e-23f37a7cd7ba" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/app/docker-compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/.env" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/models/product_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/models/product_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/router/product_router.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/product_router.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/router/users_router.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/users_router.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/schemas/users_schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/schemas/users_schemas.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +28,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectId" id="2RxVIWgz8s3Y0x21K42aYUVco6O" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -37,7 +45,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/rasulabduvaitov/Desktop/topskill-fastapi&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/rasulabduvaitov/Desktop/MarketPlace&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -74,7 +82,12 @@
       <workItem from="1688823268518" duration="3062000" />
       <workItem from="1688878200288" duration="3989000" />
       <workItem from="1688883958991" duration="12991000" />
-      <workItem from="1688966043722" duration="8503000" />
+      <workItem from="1688966043722" duration="9026000" />
+      <workItem from="1688988004695" duration="1336000" />
+      <workItem from="1689139794474" duration="4431000" />
+      <workItem from="1689159352238" duration="1935000" />
+      <workItem from="1689180349695" duration="1363000" />
+      <workItem from="1689235277675" duration="1006000" />
     </task>
     <servers />
   </component>

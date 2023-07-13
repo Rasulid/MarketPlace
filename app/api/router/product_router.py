@@ -453,3 +453,25 @@ async def search_product(title: str, db=Depends(get_db)):
         product_data.append(s)
 
     return product_data
+
+
+@router.get('/site/get-all-products', tags=["Site"], response_model=List[ProductSchemaSearch])
+async def get_all_products(db: Session = Depends(get_db)):
+    query = db.query(ProductModel).all()
+
+    product_data = []
+
+    for product in query:
+        images = [
+            ProductImageSchema(file_name=image.file_name, file_path=image.file_path)
+            for image in product.images
+        ]
+
+        s = ProductSchemaSearch(
+            title=product.title,
+            images=images,
+            price=product.price
+        )
+        product_data.append(s)
+
+    return product_data

@@ -26,7 +26,7 @@ app.include_router(colour_router)
 
 app.mount("/api/users", users_router)
 app.mount("/api/super-user", super_user_router)
-app.mount('/media', StaticFiles(directory="static/image"), name="media")
+app.mount('/static/image', StaticFiles(directory="static/image"), name="media")
 
 
 app.add_middleware(
