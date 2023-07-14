@@ -11,11 +11,9 @@ from api.auth.login import get_current_admin, get_user_exceptions
 from api.schemas.admin_schema import Admin_Schema, Admin_Read_Schema
 from api.models.admin_model import AdminModel
 
-router = APIRouter(tags=["Admin"],
-                   prefix="/api/admin")
+router = APIRouter()
 
 
-@router.post("/registr", response_model=List[Admin_Read_Schema])
 async def register(admin: Admin_Schema,
                    db: Session = Depends(get_db),
                    login: dict = Depends(get_current_admin)):
@@ -52,7 +50,6 @@ async def register(admin: Admin_Schema,
     return res
 
 
-@router.put("/update")
 async def update_admin(admin: Admin_Schema,
                        db: Session = Depends(get_db),
                        login: dict = Depends(get_current_admin)):
@@ -93,7 +90,6 @@ async def update_admin(admin: Admin_Schema,
                         content={"message": f"{admin_model.gmail} is already exists"})
 
 
-@router.get("/admins-list", response_model=List[Admin_Read_Schema])
 async def user_list(db: Session = Depends(get_db),
                     user: dict = Depends(get_current_admin)):
     if user is None:
@@ -103,7 +99,6 @@ async def user_list(db: Session = Depends(get_db),
     return model_
 
 
-@router.delete("/delete/{id}")
 async def delete_admin(id: int,
                         db: Session = Depends(get_db),
                        login: dict = Depends(get_current_admin)):

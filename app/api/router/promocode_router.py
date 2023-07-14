@@ -13,8 +13,7 @@ router = APIRouter(tags=["Promocode"],
                    prefix="/api/promocode")
 
 
-@router.get("/get-list-prom", response_model=List[PromocodeReadSchema])
-async def create_promocode(db: Session = Depends(get_db),
+async def promocode_list(db: Session = Depends(get_db),
                            login: dict = Depends(get_current_staff)
                            ):
     result = []
@@ -30,7 +29,6 @@ async def create_promocode(db: Session = Depends(get_db),
     return result
 
 
-@router.post("/create", response_model=PromocodeReadSchema)
 async def create_promocode(promocode_schemas: PromocodeSchema,
                            db: Session = Depends(get_db),
                            login: dict = Depends(get_current_staff)):
@@ -54,7 +52,6 @@ async def create_promocode(promocode_schemas: PromocodeSchema,
     return result
 
 
-@router.put("/update/{id}", response_model=PromocodeReadSchema)
 async def update_promocode(id: int,
                            promocode_schemas: PromocodeSchema,
                            db: Session = Depends(get_db),
@@ -82,7 +79,6 @@ async def update_promocode(id: int,
     return result
 
 
-@router.delete("/delete/{id}")
 async def delete_promocode(id: int,
                            db: Session = Depends(get_db),
                            login: dict = Depends(get_current_staff)):
@@ -102,7 +98,6 @@ async def delete_promocode(id: int,
                         detail="Promocode not found")
 
 
-@router.get("/get-by/{id}", response_model=PromocodeReadSchema)
 async def get_promocode_by_id(id: int,
                               db: Session = Depends(get_db),
                               login: dict = Depends(get_current_staff)):

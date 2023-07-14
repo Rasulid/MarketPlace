@@ -15,7 +15,7 @@ from api.models.admin_model import AdminModel
 SECRET_KEY = SECRET_KEY
 ALGORITHM = "HS256"
 
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/auth/token/")
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/admin/auth/token/")
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -90,7 +90,6 @@ def create_refresh_token(
     encode.update({"exp": expire})
     return jwt.encode(encode, SECRET_KEY, ALGORITHM)
 
-@router.post("/token")
 async def login_for_access_token(
         form_data: OAuth2PasswordRequestForm = Depends(),
         db: Session = Depends(get_db)
@@ -113,7 +112,6 @@ async def login_for_access_token(
             "refresh_token": get_refresh_token}
 
 
-@router.post("/refresh_token")
 async def refresh_token(refresh_token: str):
     try:
         payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])

@@ -12,15 +12,13 @@ router = APIRouter(
 )
 
 
-@router.get("/")
 async def list_colours(db: Session = Depends(get_db),
                        login: dict = Depends(get_current_staff)):
     query = db.query(ColourModel).all()
     return query
 
 
-@router.post("/create", response_model=ColourSchema)
-async def category_create(
+async def colour_create(
         title: str,
         db: Session = Depends(get_db),
         login: dict = Depends(get_current_staff)
@@ -38,8 +36,7 @@ async def category_create(
                         content="this colour already exists")
 
 
-@router.put("/update/{id}}", response_model=ColourSchema)
-async def category_update(id: int,
+async def colour_update(id: int,
                           title: str,
                           db: Session = Depends(get_db),
                           login: dict = Depends(get_current_staff)
@@ -59,7 +56,6 @@ async def category_update(id: int,
     )
 
 
-@router.delete("/delete/{id}")
 async def delete_colour(id: int,
                         db: Session = Depends(get_db),
                         login: dict = Depends(get_current_staff)

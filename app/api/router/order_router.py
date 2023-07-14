@@ -19,7 +19,6 @@ def find_procent(cash, procent) -> int:
     result_price = cash * (procent / 100)
     return result_price
 
-@router.post('/create', response_model=OrderSchemaRead)
 async def create_order(
         order_schema: OrderSchema,
         product_id: int,
@@ -109,10 +108,11 @@ async def create_order(
     return response
 
 
-@router.get('/orders-list/{id}', response_model=List[OrderSchemaRead])
-async def order_list_by_user_id(id: int, db: Session = Depends(get_db),
+async def order_list_by_user_id(db: Session = Depends(get_db),
                                 login: dict = Depends(get_current_user)
                                 ):
+    id = login.get("user_id")
+
     query = db.query(Order, OrderedProduct) \
         .join(OrderedProduct, Order.id == OrderedProduct.order_id) \
         .join(Promocode, Order.promocode == Promocode.id)\

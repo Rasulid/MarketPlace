@@ -10,10 +10,12 @@ from api.router.category_router import router as category_router
 from api.router.colour_router import router as colour_router
 from api.router.promocode_router import router as promocode_router
 from fastapi.middleware.cors import CORSMiddleware
+from api.router.admin.product import app as admin
+from api.router.site.product import app as site
 
 
-app = FastAPI(title="Admin",
-              docs_url="/api/admin/docs")
+
+app = FastAPI()
 
 
 app.include_router(admin_router)
@@ -24,9 +26,11 @@ app.include_router(order_router)
 app.include_router(category_router)
 app.include_router(colour_router)
 
-app.mount("/api/users", users_router)
 app.mount("/api/super-user", super_user_router)
 app.mount('/static/image', StaticFiles(directory="static/image"), name="media")
+app.mount('/admin',admin)
+app.mount('/site',site)
+
 
 
 app.add_middleware(

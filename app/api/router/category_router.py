@@ -13,7 +13,6 @@ router = APIRouter(
 )
 
 
-@router.get('/')
 async def category_list(db: Session = Depends(get_db),
                         login: dict = Depends(get_current_staff)
                         ):
@@ -21,7 +20,6 @@ async def category_list(db: Session = Depends(get_db),
     return query
 
 
-@router.post("/create", response_model=CategorySchema)
 async def category_create(
         title: str,
         db: Session = Depends(get_db),
@@ -42,7 +40,6 @@ async def category_create(
                         content="this colour already exists")
 
 
-@router.put("/update/{id}}", response_model=CategorySchema)
 async def category_update(id: int,
                           title: str,
                           db: Session = Depends(get_db),
@@ -64,8 +61,7 @@ async def category_update(id: int,
 
 
 
-@router.delete("/delete/{id}")
-async def delete_colour(id: int,
+async def delete_category(id: int,
                         db: Session = Depends(get_db),
                         login: dict = Depends(get_current_staff)
                         ):

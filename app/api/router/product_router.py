@@ -41,7 +41,6 @@ Create a new Product
 """
 
 
-@router.post("/create", response_model=ProductSchemaReadV2)
 async def create_product(
         product: AStudentWorkCreateSchema,
         db: Session = Depends(get_db),
@@ -152,7 +151,6 @@ get list of products
 """
 
 
-@router.get("/list-product", response_model=List[ProductSchemaReadV2])
 async def product_list(db: Session = Depends(get_db),
                        login: dict = Depends(get_current_staff)
                        ):
@@ -212,7 +210,6 @@ get Update by ID
 """
 
 
-@router.put("/update/{id}")
 async def update_product(
         id: int,
         product: AStudentWorkCreateSchema,
@@ -325,7 +322,6 @@ get delete by ID
 """
 
 
-@router.delete("/delete/{id}")
 async def delete_product(id: int,
                          db: Session = Depends(get_db),
                          login: dict = Depends(get_current_staff)
@@ -371,8 +367,7 @@ get product by ID
 """
 
 
-@router.get("/get/{id}/", response_model=List[ProductSchemaReadV2])
-async def product_list(id: int,
+async def product_by_id(id: int,
                        db: Session = Depends(get_db),
                        login: dict = Depends(get_current_staff)
                        ):
@@ -434,7 +429,6 @@ Search product by title
 """
 
 
-@router.get('/search_product/', tags=["search"], response_model=List[ProductSchemaSearch])
 async def search_product(title: str, db=Depends(get_db)):
     query = db.query(ProductModel).filter(ProductModel.title == title).options(joinedload(ProductModel.images)).all()
     product_data = []
@@ -455,7 +449,6 @@ async def search_product(title: str, db=Depends(get_db)):
     return product_data
 
 
-@router.get('/site/get-all-products', tags=["Site"], response_model=List[ProductSchemaSearch])
 async def get_all_products(db: Session = Depends(get_db)):
     query = db.query(ProductModel).all()
 

@@ -13,8 +13,7 @@ from api.auth.login import get_user_exceptions, get_current_staff, get_current_u
 router = FastAPI(title="Users")
 
 
-@router.get("/user/{id}/", response_model=User_Schema)
-async def list_users(id: int
+async def lists_users(id: int
                      , db: Session = Depends(get_db),
                      login: dict = Depends(get_current_user)):
     if login is None:
@@ -30,10 +29,8 @@ async def list_users(id: int
     return query
 
 
-@router.get("/user/", response_model=User_Schema)
-async def list_users(
-                      db: Session = Depends(get_db),
-                     login: dict = Depends(get_current_user)):
+async def user(db: Session = Depends(get_db),
+               login: dict = Depends(get_current_user)):
     id = login.get("user_id")
     if login is None:
         return get_user_exceptions()
@@ -47,7 +44,7 @@ async def list_users(
 
     return query
 
-@router.get("/users-list", response_model=List[User_Schema])
+
 async def list_users(db: Session = Depends(get_db),
                      login: dict = Depends(get_current_staff)):
     if login is None:
@@ -58,7 +55,6 @@ async def list_users(db: Session = Depends(get_db),
     return query
 
 
-@router.post("/register", response_model=List[User_Schema])
 async def register(user: User_Schema,
                    db: Session = Depends(get_db)):
     res = []
@@ -96,12 +92,10 @@ async def register(user: User_Schema,
     return res
 
 
-@router.put("/update/{id}")
 async def update_user_by_id(user: User_Schema,
-                            id:int,
-                       db: Session = Depends(get_db),
-                       login: dict = Depends(get_current_staff)):
-
+                            id: int,
+                            db: Session = Depends(get_db),
+                            login: dict = Depends(get_current_staff)):
     user_model = db.query(UserModel) \
         .filter(UserModel.id == id).first()
 
@@ -140,12 +134,10 @@ async def update_user_by_id(user: User_Schema,
                         content={"message": f"{user_model.gmail} is already exists"})
 
 
-@router.put("/update")
-async def update_user_by_id(user: User_Schema,
+async def user_update(user: User_Schema,
 
-                       db: Session = Depends(get_db),
-                       login: dict = Depends(get_current_staff)):
-
+                      db: Session = Depends(get_db),
+                      login: dict = Depends(get_current_staff)):
     id = login.get('user.id')
 
     user_model = db.query(UserModel) \
@@ -186,8 +178,6 @@ async def update_user_by_id(user: User_Schema,
                         content={"message": f"{user_model.gmail} is already exists"})
 
 
-
-@router.delete("/delete/{id}")
 async def delete_user(db: Session = Depends(get_db),
                       login: dict = Depends(get_current_user)):
     id = login.get("user_id")
@@ -204,5 +194,3 @@ async def delete_user(db: Session = Depends(get_db),
     db.commit()
 
     return delete
-
-
