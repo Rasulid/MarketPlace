@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import date
+
 
 from pydantic import BaseModel
 
@@ -6,7 +7,7 @@ from pydantic import BaseModel
 class User_Schema(BaseModel):
     name: str
     l_name: str
-    age: int
+    born: date
     phone_number: str
     country: str = "UZB"
     region: str

@@ -7,9 +7,7 @@
     <list default="true" id="c04f7781-be60-4d61-b24e-23f37a7cd7ba" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/.env" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/models/product_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/models/product_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/router/product_router.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/product_router.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/models/user_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/models/user_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/router/users_router.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/users_router.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/schemas/users_schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/schemas/users_schemas.py" afterDir="false" />
     </list>
@@ -87,7 +85,9 @@
       <workItem from="1689139794474" duration="4431000" />
       <workItem from="1689159352238" duration="1935000" />
       <workItem from="1689180349695" duration="1363000" />
-      <workItem from="1689235277675" duration="1006000" />
+      <workItem from="1689235277675" duration="1834000" />
+      <workItem from="1689248320844" duration="71000" />
+      <workItem from="1689308771215" duration="1009000" />
     </task>
     <servers />
   </component>

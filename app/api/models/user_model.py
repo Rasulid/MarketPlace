@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import Integer, String, Boolean, Column, DateTime, func
-from api.db.DataBasse import Base, engine
+from api.db.DataBasse import Base
 
 
 class UserModel(Base):
@@ -9,7 +9,7 @@ class UserModel(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     l_name = Column(String, nullable=False)
-    age = Column(Integer, nullable=False)
+    born = Column(DateTime, nullable=True)
     phone_number = Column(String, nullable=False)
     country = Column(String, default="UZB", nullable=False)
     region = Column(String, nullable=False)
