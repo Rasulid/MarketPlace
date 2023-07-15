@@ -7,8 +7,20 @@ from api.router.users_router import user, register, user_update
 from api.schemas.users_schemas import User_Schema
 from api.router.order_router import create_order, order_list_by_user_id
 from api.schemas.order_schema import OrderSchemaRead
+from api.auth.admin_auth import login_for_access_token
 
 app = FastAPI(title="Site")
+
+"""
+________________________________________________________________________________________________________________________
+Login
+
+"""
+
+
+@app.post("/site/login", tags=["login"])
+async def login(auth: Annotated[dict, Depends(login_for_access_token)]):
+    return auth
 
 
 @app.get('/api/search_product/', tags=["search"], response_model=List[ProductSchemaSearch])
