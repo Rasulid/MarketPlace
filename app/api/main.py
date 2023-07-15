@@ -10,8 +10,8 @@ from api.router.category_router import router as category_router
 from api.router.colour_router import router as colour_router
 from api.router.promocode_router import router as promocode_router
 from fastapi.middleware.cors import CORSMiddleware
-from api.router.admin.product import app as admin
-from api.router.site.product import app as site
+from api.router.admin.api import app as admin
+from api.router.site.api import app as site
 
 
 
