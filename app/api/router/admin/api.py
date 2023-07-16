@@ -13,7 +13,7 @@ from api.router.promocode_router import promocode_list, create_promocode, update
     get_promocode_by_id
 from api.schemas.promocode_schema import PromocodeReadSchema
 from api.router.users_router import lists_users, list_users, delete_user, update_user_by_id
-from api.schemas.users_schemas import User_Schema
+from api.schemas.users_schemas import User_Schema, User_Schema_Read
 from api.auth.admin_auth import login_for_access_token, refresh_token
 
 app = FastAPI(title="Admin")
@@ -200,12 +200,12 @@ Users
 """
 
 
-@app.get("/api/users/user/{id}/", response_model=User_Schema, tags=["user"])
+@app.get("/api/users/user/{id}/", response_model=User_Schema_Read, tags=["user"])
 async def get_user_id(users: Annotated[dict, Depends(lists_users)]):
     return users
 
 
-@app.get("/api/users/users-list", response_model=List[User_Schema], tags=["user"])
+@app.get("/api/users/users-list", response_model=List[User_Schema_Read], tags=["user"])
 async def list_user(users: Annotated[dict, Depends(list_users)]):
     return users
 

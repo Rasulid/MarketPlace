@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
 
 from api.db.session import get_db
-from api.schemas.users_schemas import User_Schema
+from api.schemas.users_schemas import User_Schema, User_Schema_Read
 from api.models.user_model import UserModel
 from api.auth.admin_auth import password_hash
 from api.auth.login import get_user_exceptions, get_current_staff, get_current_user

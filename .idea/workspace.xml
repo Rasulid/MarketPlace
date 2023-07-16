@@ -6,9 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="c04f7781-be60-4d61-b24e-23f37a7cd7ba" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/.env" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/.env-ras" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/router/site/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/site/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/router/admin/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/admin/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/router/users_router.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/users_router.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/schemas/users_schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/schemas/users_schemas.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +42,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "dart.analysis.tool.window.visible": "false",
-    "last_opened_file_path": "/home/rasulabduvaitov/Desktop/MarketPlace/app/api/router/site",
+    "last_opened_file_path": "/home/rasulabduvaitov/Desktop/MarketPlace",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -93,7 +93,10 @@
       <workItem from="1689308771215" duration="3245000" />
       <workItem from="1689340805353" duration="7281000" />
       <workItem from="1689351100781" duration="2646000" />
-      <workItem from="1689394623304" duration="2158000" />
+      <workItem from="1689394623304" duration="4461000" />
+      <workItem from="1689443527817" duration="254000" />
+      <workItem from="1689486793841" duration="19000" />
+      <workItem from="1689513796475" duration="1139000" />
     </task>
     <servers />
   </component>
