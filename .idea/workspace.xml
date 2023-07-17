@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c04f7781-be60-4d61-b24e-23f37a7cd7ba" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/auth/admin_auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/auth/admin_auth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/router/admin/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/admin/api.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/router/users_router.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/users_router.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/schemas/users_schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/schemas/users_schemas.py" afterDir="false" />
@@ -36,21 +37,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "dart.analysis.tool.window.visible": "false",
-    "last_opened_file_path": "/home/rasulabduvaitov/Desktop/MarketPlace",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/rasulabduvaitov/Desktop/MarketPlace&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app/api/router/site" />
@@ -96,7 +97,8 @@
       <workItem from="1689394623304" duration="4461000" />
       <workItem from="1689443527817" duration="254000" />
       <workItem from="1689486793841" duration="19000" />
-      <workItem from="1689513796475" duration="1139000" />
+      <workItem from="1689513796475" duration="1657000" />
+      <workItem from="1689572052244" duration="2120000" />
     </task>
     <servers />
   </component>

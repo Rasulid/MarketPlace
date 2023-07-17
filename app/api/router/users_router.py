@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import List
 from fastapi import FastAPI, Depends, status, HTTPException
+from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
 
@@ -9,13 +10,15 @@ from api.schemas.users_schemas import User_Schema, User_Schema_Read
 from api.models.user_model import UserModel
 from api.auth.admin_auth import password_hash
 from api.auth.login import get_user_exceptions, get_current_staff, get_current_user
+from api.core.config import SECRET_KEY
+from api.models.admin_model import AdminModel
 
 router = FastAPI(title="Users")
 
 
 async def lists_users(id: int
-                     , db: Session = Depends(get_db),
-                     login: dict = Depends(get_current_user)):
+                      , db: Session = Depends(get_db),
+                      login: dict = Depends(get_current_user)):
     if login is None:
         return get_user_exceptions()
 
@@ -53,6 +56,21 @@ async def list_users(db: Session = Depends(get_db),
     query = db.query(UserModel).all()
 
     return query
+
+
+async def me(token: str,
+             db: Session = Depends(get_db)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user_id = payload.get("id")
+        query = db.query(UserModel).filter(UserModel.id == user_id).first()
+
+        if query is None:
+            query = db.query(AdminModel).filter(AdminModel.id == user_id).first()
+
+        return query
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
 
 
 async def register(user: User_Schema,
@@ -178,10 +196,9 @@ async def user_update(user: User_Schema,
                         content={"message": f"{user_model.gmail} is already exists"})
 
 
-async def delete_user(db: Session = Depends(get_db),
+async def delete_user(id: int,
+                      db: Session = Depends(get_db),
                       login: dict = Depends(get_current_user)):
-    id = login.get("user_id")
-
     query = db.query(UserModel).filter(UserModel.id == id).first()
 
     if query is None:

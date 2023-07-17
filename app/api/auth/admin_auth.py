@@ -90,12 +90,12 @@ def create_refresh_token(
     encode.update({"exp": expire})
     return jwt.encode(encode, SECRET_KEY, ALGORITHM)
 
+
 async def login_for_access_token(
         form_data: OAuth2PasswordRequestForm = Depends(),
         db: Session = Depends(get_db)
 
 ):
-
     try:
         user = authenticate_admin(form_data.username, form_data.password, db=db)
         if not user:
@@ -122,7 +122,6 @@ async def refresh_token(refresh_token: str):
     new_access_token = jwt.encode({"sub": user_id}, SECRET_KEY, algorithm=ALGORITHM)
 
     return {"access_token": new_access_token}
-
 
 
 # Exceptions

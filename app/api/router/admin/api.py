@@ -12,7 +12,7 @@ from api.schemas.colour_schema import ColourSchema
 from api.router.promocode_router import promocode_list, create_promocode, update_promocode, delete_promocode, \
     get_promocode_by_id
 from api.schemas.promocode_schema import PromocodeReadSchema
-from api.router.users_router import lists_users, list_users, delete_user, update_user_by_id
+from api.router.users_router import lists_users, list_users, delete_user, update_user_by_id, me
 from api.schemas.users_schemas import User_Schema, User_Schema_Read
 from api.auth.admin_auth import login_for_access_token, refresh_token
 
@@ -217,4 +217,9 @@ async def update_user(users: Annotated[dict, Depends(update_user_by_id)]):
 
 @app.delete("/api/users/delete/{id}", tags=["user"])
 async def user_delete(users: Annotated[dict, Depends(delete_user)]):
+    return users
+
+
+@app.get("/api/users/me")
+async def user_me(users: Annotated[dict, Depends(me)]):
     return users
