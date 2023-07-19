@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from api.db.session import get_db
@@ -13,6 +14,15 @@ router = APIRouter(
 )
 
 
+
+@router.get("/get-buy/{id}")
+async def colour_by_id(id: int,
+                       db: Session = Depends(get_db),
+                       login: dict = Depends(get_current_staff)):
+    query = db.query(CategoryModel).filter(CategoryModel.id == id).first()
+    return query
+
+
 async def category_list(db: Session = Depends(get_db),
                         login: dict = Depends(get_current_staff)
                         ):
@@ -20,13 +30,18 @@ async def category_list(db: Session = Depends(get_db),
     return query
 
 
+class CategoryCreate(BaseModel):
+    title: str
+
 async def category_create(
-        title: str,
+        title: CategoryCreate,
         db: Session = Depends(get_db),
         login: dict = Depends(get_current_staff)
 ):
     model = CategoryModel()
-    model.title = title
+    model.title = title.title
+
+    title = title.title
 
     query = db.query(CategoryModel).filter(CategoryModel.title == title).first()
     print(query)
@@ -41,14 +56,14 @@ async def category_create(
 
 
 async def category_update(id: int,
-                          title: str,
+                          title: CategoryCreate,
                           db: Session = Depends(get_db),
                           login: dict = Depends(get_current_staff)
                           ):
     query = db.query(CategoryModel).filter(CategoryModel.id == id).first()
 
     if query is not None:
-        query.title = title
+        query.title = title.title
 
         db.add(query)
         db.commit()

@@ -7,7 +7,7 @@ from api.schemas.admin_schema import Admin_Read_Schema
 from api.router.amin_router import register, update_admin, user_list
 from api.router.category_router import category_list, category_create, category_update, delete_category
 from api.schemas.category_schema import CategorySchema
-from api.router.colour_router import list_colours, colour_create, colour_update, delete_colour
+from api.router.colour_router import list_colours, colour_create, colour_update, delete_colour, colour_by_id
 from api.schemas.colour_schema import ColourSchema
 from api.router.promocode_router import promocode_list, create_promocode, update_promocode, delete_promocode, \
     get_promocode_by_id
@@ -27,8 +27,6 @@ async def access_token(auth: Annotated[dict, Depends(login_for_access_token)]):
 @app.post("/auth/refresh_token", tags=["auth"])
 async def login_to_refresh_tocken(auth: Annotated[dict, Depends(refresh_token)]):
     return auth
-
-
 
 
 """
@@ -118,12 +116,16 @@ async def cagtegory_delete(category: Annotated[dict, Depends(delete_category)]):
     return category
 
 
+@app.get("/api/category/get/{id}", tags=["colour"])
+async def colour_delete(colour: Annotated[dict, Depends(delete_colour)]):
+    return colour
+
+
 """
 ________________________________________________________________________________________________________________________
 Colour
 
 """
-
 
 @app.get("/api/colour/list", tags=["colour"])
 async def colour_list(colour: Annotated[dict, Depends(list_colours)]):

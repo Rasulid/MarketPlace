@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from api.db.session import get_db
 from api.models.product_model import ColourModel
@@ -17,14 +18,25 @@ async def list_colours(db: Session = Depends(get_db),
     query = db.query(ColourModel).all()
     return query
 
+@router.get("/get-buy/{id}")
+async def colour_by_id(id: int,
+                       db: Session = Depends(get_db),
+                       login: dict = Depends(get_current_staff)):
+    query = db.query(ColourModel).filter(ColourModel.id == id).first()
+    return query
+
+class ColourCreate(BaseModel):
+    title: str
 
 async def colour_create(
-        title: str,
+        title: ColourCreate,
         db: Session = Depends(get_db),
         login: dict = Depends(get_current_staff)
 ):
     model = ColourModel()
-    model.title = title
+    model.title = title.title
+
+    title = title.title
 
     query = db.query(ColourModel).filter(ColourModel.title == title).first()
     if query is None:
@@ -36,15 +48,17 @@ async def colour_create(
                         content="this colour already exists")
 
 
+
+
 async def colour_update(id: int,
-                          title: str,
+                          title: ColourCreate,
                           db: Session = Depends(get_db),
                           login: dict = Depends(get_current_staff)
                           ):
     query = db.query(ColourModel).filter(ColourModel.id == id).first()
 
     if query is not None:
-        query.title = title
+        query.title = title.title
 
         db.add(query)
         db.commit()
