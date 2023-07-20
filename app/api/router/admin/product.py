@@ -5,7 +5,7 @@ from api.router.product_router import product_list, create_product, product_by_i
 from api.schemas.product_schema import ProductSchemaReadV2
 from api.schemas.admin_schema import Admin_Read_Schema
 from api.router.amin_router import register, update_admin, user_list
-from api.router.category_router import category_list, category_create, category_update, delete_category
+from api.router.category_router import category_list, category_create, category_update, delete_category, category_by_id
 from api.schemas.category_schema import CategorySchema
 from api.router.colour_router import list_colours, colour_create, colour_update, delete_colour, colour_by_id
 from api.schemas.colour_schema import ColourSchema
@@ -96,8 +96,13 @@ Category
 """
 
 
-@app.get('/api/category/list', tags=["category"])
+@app.get('/api/category/list/4', tags=["category"])
 async def category_list_(category: Annotated[dict, Depends(category_list)]):
+    return category
+
+
+@app.get("/api/category/get-by/{id}")
+async def categor_by_id(category: Annotated[dict, Depends(category_by_id)]):
     return category
 
 
@@ -106,7 +111,7 @@ async def create_category(category: Annotated[dict, Depends(category_create)]):
     return category
 
 
-@app.put("/api/category/update/{id}}", response_model=CategorySchema, tags=["category"])
+@app.put("/api/category/update/{id}", response_model=CategorySchema, tags=["category"])
 async def create_update(category: Annotated[dict, Depends(category_update)]):
     return category
 
@@ -116,7 +121,7 @@ async def cagtegory_delete(category: Annotated[dict, Depends(delete_category)]):
     return category
 
 
-@app.get("/api/category/get/{id}", tags=["colour"])
+@app.get("/api/colour/delete/{id}", tags=["colour"])
 async def colour_delete(colour: Annotated[dict, Depends(delete_colour)]):
     return colour
 
@@ -126,6 +131,7 @@ ________________________________________________________________________________
 Colour
 
 """
+
 
 @app.get("/api/colour/list", tags=["colour"])
 async def colour_list(colour: Annotated[dict, Depends(list_colours)]):
