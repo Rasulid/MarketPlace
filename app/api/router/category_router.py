@@ -15,7 +15,7 @@ router = APIRouter(
 
 
 
-# @router.get("/get-buy/{id}")
+@router.get("/get-buy/{id}")
 async def category_by_id(id: int,
                        db: Session = Depends(get_db),
                        login: dict = Depends(get_current_staff)):
