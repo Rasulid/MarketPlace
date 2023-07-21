@@ -13,10 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from api.router.admin.api import app as admin
 from api.router.site.api import app as site
 
-
-
 app = FastAPI()
-
 
 app.include_router(admin_router)
 app.include_router(admin_auth_router)
@@ -25,18 +22,18 @@ app.include_router(promocode_router)
 app.include_router(order_router)
 app.include_router(category_router)
 app.include_router(colour_router)
+app.include_router(users_router)
+
 
 app.mount("/api/super-user", super_user_router)
 app.mount('/static/image', StaticFiles(directory="static/image"), name="media")
-app.mount('/admin',admin)
-app.mount('/site',site)
-
-
+app.mount('/admin', admin)
+app.mount('/site', site)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # allow all origins
+    allow_origins=["*"],  # allow all origins
     allow_credentials=True,
-    allow_methods=["*"], # allow all HTTP methods
-    allow_headers=["*"], # allow all headers
+    allow_methods=["*"],  # allow all HTTP methods
+    allow_headers=["*"],  # allow all headers
 )

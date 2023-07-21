@@ -3,7 +3,22 @@ from datetime import date
 from pydantic import BaseModel
 
 
-class User_Schema(BaseModel):
+class CreateUserSchema(BaseModel):
+    # id: int
+    name: str
+    l_name: str
+    born: date
+    phone_number: str
+    country: str = "UZB"
+    region: str
+    gmail: str
+    password: str
+
+    class Config:
+        orm_mode = True
+
+
+class UserSchema(BaseModel):
     id: int
     name: str
     l_name: str
@@ -18,7 +33,7 @@ class User_Schema(BaseModel):
         orm_mode = True
 
 
-class User_Schema_Read(BaseModel):
+class UserSchemaRead(BaseModel):
     id: int
     name: str
     l_name: str

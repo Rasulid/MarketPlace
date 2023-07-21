@@ -5,15 +5,15 @@ from api.router.product_router import product_list, create_product, product_by_i
 from api.schemas.product_schema import ProductSchemaReadV2
 from api.schemas.admin_schema import Admin_Read_Schema
 from api.router.amin_router import register, update_admin, user_list
-from api.router.category_router import category_list, category_create, category_update, delete_category
+from api.router.category_router import category_list, category_create, category_update, delete_category, category_by_id
 from api.schemas.category_schema import CategorySchema
-from api.router.colour_router import list_colours, colour_create, colour_update, delete_colour
+from api.router.colour_router import list_colours, colour_create, colour_update, delete_colour, colour_by_id
 from api.schemas.colour_schema import ColourSchema
 from api.router.promocode_router import promocode_list, create_promocode, update_promocode, delete_promocode, \
     get_promocode_by_id
 from api.schemas.promocode_schema import PromocodeReadSchema
 from api.router.users_router import lists_users, list_users, delete_user, update_user_by_id, me
-from api.schemas.users_schemas import User_Schema, User_Schema_Read
+from api.schemas.users_schemas import UserSchema, UserSchemaRead, CreateUserSchema
 from api.auth.admin_auth import login_for_access_token, refresh_token
 
 app = FastAPI(title="Admin")
@@ -134,6 +134,13 @@ async def cagtegory_delete(category: Annotated[dict, Depends(delete_category)]):
     return category
 
 
+@app.get("/api/category/get-by/{id}", tags=["category"])
+async def cagtegory_by_id(category: Annotated[dict, Depends(category_by_id)]):
+    return category
+
+
+
+
 """
 ________________________________________________________________________________________________________________________
 Colour
@@ -159,6 +166,14 @@ async def update_colour(colour: Annotated[dict, Depends(colour_update)]):
 @app.delete("/api/colour/delete/{id}", tags=["colour"])
 async def colour_delete(colour: Annotated[dict, Depends(delete_colour)]):
     return colour
+
+
+@app.get("/api/colour/get-by/{id}", tags=["colour"])
+async def colour_get_by(colour: Annotated[dict, Depends(colour_by_id)]):
+    return colour
+
+
+
 
 
 """
@@ -200,17 +215,17 @@ Users
 """
 
 
-@app.get("/api/users/user/{id}/", response_model=User_Schema_Read, tags=["user"])
+@app.get("/api/users/user/{id}/", response_model=UserSchemaRead, tags=["user"])
 async def get_user_id(users: Annotated[dict, Depends(lists_users)]):
     return users
 
 
-@app.get("/api/users/users-list", response_model=List[User_Schema_Read], tags=["user"])
+@app.get("/api/users/users-list", response_model=List[UserSchemaRead], tags=["user"])
 async def list_user(users: Annotated[dict, Depends(list_users)]):
     return users
 
 
-@app.put("/api/users/update/{id}", tags=["user"])
+@app.put("/api/users/update/{id}",response_model=List[CreateUserSchema], tags=["user"])
 async def update_user(users: Annotated[dict, Depends(update_user_by_id)]):
     return users
 

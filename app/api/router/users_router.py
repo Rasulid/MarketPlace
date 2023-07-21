@@ -1,19 +1,19 @@
 from datetime import datetime
 from typing import List
-from fastapi import FastAPI, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, status, HTTPException
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
 
 from api.db.session import get_db
-from api.schemas.users_schemas import User_Schema, User_Schema_Read
+from api.schemas.users_schemas import UserSchema, UserSchemaRead, CreateUserSchema
 from api.models.user_model import UserModel
 from api.auth.admin_auth import password_hash
 from api.auth.login import get_user_exceptions, get_current_staff, get_current_user
 from api.core.config import SECRET_KEY
 from api.models.admin_model import AdminModel
 
-router = FastAPI(title="Users")
+router = APIRouter()
 
 
 async def lists_users(id: int
@@ -73,7 +73,7 @@ async def me(token: str,
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
-async def register(user: User_Schema,
+async def register(user: CreateUserSchema,
                    db: Session = Depends(get_db)):
     res = []
 
@@ -110,7 +110,7 @@ async def register(user: User_Schema,
     return res
 
 
-async def update_user_by_id(user: User_Schema,
+async def update_user_by_id(user: CreateUserSchema,
                             id: int,
                             db: Session = Depends(get_db),
                             login: dict = Depends(get_current_staff)):
@@ -152,8 +152,7 @@ async def update_user_by_id(user: User_Schema,
                         content={"message": f"{user_model.gmail} is already exists"})
 
 
-async def user_update(user: User_Schema,
-
+async def user_update(user: CreateUserSchema,
                       db: Session = Depends(get_db),
                       login: dict = Depends(get_current_staff)):
     id = login.get('user.id')

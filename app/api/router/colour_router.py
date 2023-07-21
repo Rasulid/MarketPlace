@@ -18,15 +18,17 @@ async def list_colours(db: Session = Depends(get_db),
     query = db.query(ColourModel).all()
     return query
 
-@router.get("/get-buy/{id}")
+
 async def colour_by_id(id: int,
                        db: Session = Depends(get_db),
                        login: dict = Depends(get_current_staff)):
     query = db.query(ColourModel).filter(ColourModel.id == id).first()
     return query
 
+
 class ColourCreate(BaseModel):
     title: str
+
 
 async def colour_create(
         title: ColourCreate,
@@ -48,13 +50,11 @@ async def colour_create(
                         content="this colour already exists")
 
 
-
-
 async def colour_update(id: int,
-                          title: ColourCreate,
-                          db: Session = Depends(get_db),
-                          login: dict = Depends(get_current_staff)
-                          ):
+                        title: ColourCreate,
+                        db: Session = Depends(get_db),
+                        login: dict = Depends(get_current_staff)
+                        ):
     query = db.query(ColourModel).filter(ColourModel.id == id).first()
 
     if query is not None:
