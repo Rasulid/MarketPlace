@@ -103,7 +103,7 @@ async def login_for_access_token(
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-    token_expires = timedelta(minutes=20)
+    token_expires = timedelta(minutes=60)
 
     token = create_access_token(user.gmail, user.id, express_delta=token_expires)
     get_refresh_token = create_refresh_token(user.gmail, user.id)
