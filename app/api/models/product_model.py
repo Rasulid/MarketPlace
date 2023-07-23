@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, Column, ForeignKey, DateTime, Float
+from sqlalchemy import Integer, String, Column, ForeignKey, DateTime, Float, Boolean
 from sqlalchemy.orm import relationship
 
 from api.db.DataBasse import Base
@@ -50,7 +50,7 @@ class ProductModel(Base):
     procent_sale = Column(Integer)
     promocode_id = Column(Integer, ForeignKey('promocode.id', ondelete='SET NULL'))
     price = Column(Float)
-    # visible = Column(Boolean)
+    visible = Column(Boolean)
 
     images = relationship("ProductImage", back_populates="product")
     category_rel = relationship("CategoryModel", back_populates="products_rel")

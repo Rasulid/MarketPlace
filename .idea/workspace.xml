@@ -6,10 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="c04f7781-be60-4d61-b24e-23f37a7cd7ba" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/router/site/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/site/api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/router/users_router.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/users_router.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/schemas/users_schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/schemas/users_schemas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/models/product_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/models/product_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/router/category_router.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/category_router.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/router/product_router.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/product_router.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/schemas/product_schema.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/schemas/product_schema.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +48,7 @@
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -102,6 +102,8 @@
       <workItem from="1689618514696" duration="4696000" />
       <workItem from="1689859023979" duration="1635000" />
       <workItem from="1689955932729" duration="799000" />
+      <workItem from="1690014453726" duration="713000" />
+      <workItem from="1690106064605" duration="346000" />
     </task>
     <servers />
   </component>

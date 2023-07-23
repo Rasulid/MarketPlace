@@ -32,6 +32,7 @@ class ProductSchema(BaseModel):
     procent_sale: Optional[int]
     promocode_id: Optional[int]
     price: float
+    visible: bool
     colours: List[int]
 
 
@@ -48,6 +49,8 @@ class ProductSchemaReadV2(BaseModel):
     promocode: List[PromocodeReadSchema]
     colour: List[ProductColourSchema]
     price: float
+    visible: bool
+
 
     class Config:
         orm_mode = True

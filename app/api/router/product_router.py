@@ -66,6 +66,7 @@ async def create_product(
     product_model.procent_sale = product.procent_sale
     product_model.promocode_id = product.promocode_id
     product_model.price = product.price
+    product_model.visible = product.visible
 
     query_to_category = db.query(CategoryModel).filter(CategoryModel.id == product_model.category_id).first()
 
@@ -138,7 +139,8 @@ async def create_product(
                                        procent=query_to_promocode.procent, category=[query_to_promocode.category_rel])],
         colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id,
                                     colour_id=colour.colour_id) for colour in colour_data],
-        price=product_model.price
+        price=product_model.price,
+        visible=product_model.visible
     )
 
     return product_data
@@ -196,7 +198,8 @@ async def product_list(db: Session = Depends(get_db),
             promocode=promocode,
             colour=colour,
             images=images,
-            price=product.price
+            price=product.price,
+            visible=product.visible
         )
         products.append(product_data)
 
@@ -238,6 +241,7 @@ async def update_product(
         product_model.procent_sale = product.procent_sale
         product_model.promocode_id = product.promocode_id
         product_model.price = product.price
+        product_model.visible = product.visible
         res.append(product_model)
 
         file_path = "static/image"
@@ -304,7 +308,9 @@ async def update_product(
                                            procent=promocode.procent, category=[promocode.category_rel])],
             colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id, colour_id=colour.colour_id)
                     for colour in colour_data],
-            price=product_model.price
+            price=product_model.price,
+            visible=product_model.visible
+
         )
 
         return product_data
@@ -416,7 +422,9 @@ async def product_by_id(id: int,
                                        category=[query.promocode_rel.category_rel])],
         colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id, colour_id=colour.colour_id)
                 for colour in colour_data],
-        price=query.price
+        price=query.price,
+        visible=query.visible
+
     )
 
     return [product_data]

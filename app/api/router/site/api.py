@@ -3,13 +3,19 @@ from typing import Annotated, List
 
 from api.router.product_router import search_product, get_all_products
 from api.schemas.product_schema import ProductSchemaSearch
-from api.router.users_router import user, register, user_update
+from api.router.users_router import user, register, user_update, me
 from api.schemas.users_schemas import UserSchema, CreateUserSchema
 from api.router.order_router import create_order, order_list_by_user_id
 from api.schemas.order_schema import OrderSchemaRead
 from api.auth.admin_auth import login_for_access_token
 
 app = FastAPI(title="Site")
+
+
+@app.get("/api/users/me")
+async def user_me(users: Annotated[dict, Depends(me)]):
+    return users
+
 
 """
 ________________________________________________________________________________________________________________________

@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 
 from api.db.session import get_db
 from api.models.product_model import CategoryModel
-from api.schemas.category_schema import CategorySchema
 from api.auth.login import get_current_staff
 
 router = APIRouter(
@@ -14,10 +13,9 @@ router = APIRouter(
 )
 
 
-
 async def category_by_id(id: int,
-                       db: Session = Depends(get_db),
-                       login: dict = Depends(get_current_staff)):
+                         db: Session = Depends(get_db),
+                         login: dict = Depends(get_current_staff)):
     query = db.query(CategoryModel).filter(CategoryModel.id == id).first()
     return query
 
@@ -32,6 +30,7 @@ async def category_list(db: Session = Depends(get_db),
 class CategoryCreate(BaseModel):
     title: str
 
+
 async def category_create(
         title: CategoryCreate,
         db: Session = Depends(get_db),
@@ -45,7 +44,6 @@ async def category_create(
     query = db.query(CategoryModel).filter(CategoryModel.title == title).first()
     print(query)
     if query is None:
-
         db.add(model)
         db.commit()
 
@@ -74,12 +72,10 @@ async def category_update(id: int,
     )
 
 
-
 async def delete_category(id: int,
-                        db: Session = Depends(get_db),
-                        login: dict = Depends(get_current_staff)
-                        ):
-
+                          db: Session = Depends(get_db),
+                          login: dict = Depends(get_current_staff)
+                          ):
     chack = db.query(CategoryModel).filter(CategoryModel.id == id).first()
 
     if chack is not None:
