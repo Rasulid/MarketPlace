@@ -26,7 +26,7 @@ class ProductSchema(BaseModel):
     title: str
     description: str
     category_id: int
-    created_at: datetime
+    # created_at: Optional[datetime]
     count: int
     procent_sale: int
     procent_sale: Optional[int]
