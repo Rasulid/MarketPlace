@@ -1,6 +1,7 @@
 import os
 import shutil
 import uuid
+from datetime import datetime
 from typing import List
 
 from fastapi import APIRouter, Depends, status, UploadFile, File, HTTPException
@@ -61,7 +62,7 @@ async def create_product(
     product_model.owner = owner_id
     product_model.description = product.description
     product_model.category_id = product.category_id
-    product_model.created_at = product.created_at
+    product_model.created_at = datetime.utcnow()
     product_model.count = product.count
     product_model.procent_sale = product.procent_sale
     product_model.promocode_id = product.promocode_id
