@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 
 from fastapi import APIRouter, Depends, status, HTTPException
@@ -21,8 +22,8 @@ async def register(admin: Admin_Schema,
 
     admin_model = AdminModel()
     admin_model.name = admin.name
-    admin_model.age = admin.age
-    admin_model.created_at = admin.created_at
+    admin_model.born = admin.born
+    admin_model.created_at = datetime.utcnow()
     admin_model.phone_number = admin.phone_number
     admin_model.gmail = admin.gmail
     admin_model.password = admin.password
@@ -50,10 +51,10 @@ async def register(admin: Admin_Schema,
     return res
 
 
-async def update_admin(admin: Admin_Schema,
+async def update_admin(id: int
+                       , admin: Admin_Schema,
                        db: Session = Depends(get_db),
                        login: dict = Depends(get_current_admin)):
-    id = login.get("user_id")
     admin_model = db.query(AdminModel) \
         .filter(AdminModel.id == id).first()
 
@@ -63,8 +64,8 @@ async def update_admin(admin: Admin_Schema,
             content={"message": "Admin not found"})
 
     admin_model.name = admin.name
-    admin_model.age = admin.age
-    admin_model.created_at = admin.created_at
+    admin_model.born = admin.born
+    admin_model.created_at = datetime.utcnow()
     admin_model.phone_number = admin.phone_number
     admin_model.gmail = admin.gmail
     admin_model.password = admin.password
@@ -90,7 +91,7 @@ async def update_admin(admin: Admin_Schema,
                         content={"message": f"{admin_model.gmail} is already exists"})
 
 
-async def user_list(db: Session = Depends(get_db),
+async def admin_list(db: Session = Depends(get_db),
                     user: dict = Depends(get_current_admin)):
     if user is None:
         raise get_user_exceptions()
@@ -100,9 +101,8 @@ async def user_list(db: Session = Depends(get_db),
 
 
 async def delete_admin(id: int,
-                        db: Session = Depends(get_db),
+                       db: Session = Depends(get_db),
                        login: dict = Depends(get_current_admin)):
-
     db_query = db.query(AdminModel) \
         .filter(AdminModel.id == id).first()
 

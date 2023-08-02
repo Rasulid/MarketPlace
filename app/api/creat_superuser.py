@@ -10,12 +10,14 @@ from api.models.admin_model import AdminModel
 
 router = FastAPI(title="SuperUser")
 
+born_date = datetime(2003, 11, 30)
+
 
 @router.post("/create/root/superuser")
 async def register(db: Session = Depends(get_db)):
     admin_model = AdminModel()
     admin_model.name = "rasul"
-    admin_model.age = 20
+    admin_model.born = born_date
     admin_model.created_at = datetime.now()
     admin_model.phone_number = "914774712"
     admin_model.gmail = "root@root.com"

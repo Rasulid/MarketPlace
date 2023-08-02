@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from typing import Optional
 
 from pydantic import BaseModel
@@ -6,8 +6,8 @@ from pydantic import BaseModel
 
 class Admin_Schema(BaseModel):
     name: str
-    age: int
-    created_at: datetime
+    born: date
+    # created_at: Optional[datetime]
     phone_number: str
     gmail: str
     password: str
@@ -21,8 +21,9 @@ class Admin_Schema(BaseModel):
 
 
 class Admin_Read_Schema(BaseModel):
+    id: int
     name: str
-    age: int
+    born: date
     created_at: datetime
     phone_number: str
     gmail: str

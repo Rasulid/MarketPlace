@@ -25,7 +25,7 @@ app.include_router(colour_router)
 app.include_router(users_router)
 
 
-app.mount("/api/super-user", super_user_router)
+app.mount("/super-user", super_user_router)
 app.mount('/static/image', StaticFiles(directory="static/image"), name="media")
 app.mount('/admin', admin)
 app.mount('/site', site)

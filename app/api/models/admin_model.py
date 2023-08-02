@@ -7,7 +7,7 @@ class AdminModel(Base):
     __tablename__ = 'admins'
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
-    age = Column(Integer, nullable=False)
+    born = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=func.utcnow())
     phone_number = Column(String, nullable=False)
     gmail = Column(String, nullable=False)
