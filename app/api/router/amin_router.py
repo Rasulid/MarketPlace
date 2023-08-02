@@ -76,6 +76,9 @@ async def update_admin(id: int
     admin_model.is_superuser = admin.is_superuser
     admin_model.is_verified = admin.is_verified
 
+    db.add(admin_model)
+    db.commit()
+
     return JSONResponse(status_code=status.HTTP_200_OK,
                         content={"message": f"Update admin {admin_model.gmail} was successfully"})
 
