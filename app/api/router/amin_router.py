@@ -76,23 +76,12 @@ async def update_admin(id: int
     admin_model.is_superuser = admin.is_superuser
     admin_model.is_verified = admin.is_verified
 
-    check_admin = db.query(AdminModel).filter(AdminModel.gmail == login.get("sub")).first()
-
-    if check_admin.id == admin_model.id:
-        hash_password = password_hash(admin.password)
-        admin_model.password = hash_password
-        db.add(admin_model)
-        db.commit()
-
-        return JSONResponse(status_code=status.HTTP_200_OK,
-                            content={"message": f"Update admin {admin_model.gmail} was successfully"})
-
-    return JSONResponse(status_code=status.HTTP_409_CONFLICT,
-                        content={"message": f"{admin_model.gmail} is already exists"})
+    return JSONResponse(status_code=status.HTTP_200_OK,
+                        content={"message": f"Update admin {admin_model.gmail} was successfully"})
 
 
 async def admin_list(db: Session = Depends(get_db),
-                    user: dict = Depends(get_current_admin)):
+                     user: dict = Depends(get_current_admin)):
     if user is None:
         raise get_user_exceptions()
 
