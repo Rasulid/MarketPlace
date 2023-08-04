@@ -1,3 +1,4 @@
+from passlib import exc
 from fastapi import Depends, HTTPException, status, APIRouter
 
 from api.models.user_model import Base, UserModel
@@ -44,28 +45,35 @@ def password_hash(password):
 
 
 def verify_password(plain_password, hashed_password):
-    if plain_password is None or hashed_password is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="failed verify password")
-    print("pp", plain_password, "hp", hashed_password)
-    return bcrypt_context.verify(plain_password, hashed_password)
+    try:
+        if plain_password is None or hashed_password is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="failed verify password")
+        print("pp", plain_password, "hp", hashed_password)
+        return bcrypt_context.verify(plain_password, hashed_password)
+    except exc.UnknownHashError:
+        raise exc.UnknownHashError
+
 
 
 def authenticate_admin(gmail: str, password: str, db):
-    user = db.query(AdminModel).filter(AdminModel.gmail == gmail).first()
+    try:
+        user = db.query(AdminModel).filter(AdminModel.gmail == gmail).first()
 
-    if user is None:
-        user = db.query(UserModel).filter(UserModel.gmail == gmail).first()
+        if user is None:
+            user = db.query(UserModel).filter(UserModel.gmail == gmail).first()
 
-        print(58, password, user.password)
+            print(58, password, user.password)
 
-    if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user is not valid")
+        if user is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user is not valid")
 
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user is not valid")
-    if not verify_password(password, user.password):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="password is not valid")
-    return user
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user is not valid")
+        if not verify_password(password, user.password):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="password is not valid")
+        return user
+    except exc.UnknownHashError:
+        raise exc.UnknownHashError
 
 
 def create_access_token(
@@ -106,6 +114,8 @@ async def login_for_access_token(
             raise token_exception()
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
+    except exc.UnknownHashError:
+        raise exc.UnknownHashError
 
     token_expires = timedelta(minutes=60)
 
