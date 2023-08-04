@@ -48,7 +48,6 @@ def verify_password(plain_password, hashed_password):
     try:
         if plain_password is None or hashed_password is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="failed verify password")
-        print("pp", plain_password, "hp", hashed_password)
         return bcrypt_context.verify(plain_password, hashed_password)
     except exc.UnknownHashError:
         raise exc.UnknownHashError
@@ -61,8 +60,6 @@ def authenticate_admin(gmail: str, password: str, db):
 
         if user is None:
             user = db.query(UserModel).filter(UserModel.gmail == gmail).first()
-
-            print(58, password, user.password)
 
         if user is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user is not valid")
@@ -108,7 +105,6 @@ async def login_for_access_token(
 
 ):
     try:
-        print(102 , form_data.username, form_data.password)
         user = authenticate_admin(form_data.username, form_data.password, db=db)
         if not user:
             raise token_exception()

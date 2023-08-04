@@ -69,7 +69,7 @@ async def admin_list(admin: Annotated[dict, Depends(admin_list)]):
     return admin
 
 
-@app.get("/api/admin/{id}}", response_model=Admin_Read_Schema, tags=["admin"])
+@app.get("/api/admin/{id}", response_model=Admin_Read_Schema, tags=["admin"])
 async def admin_by_id(admin: Annotated[dict, Depends(admin_by_ID)]):
     return admin
 

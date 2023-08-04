@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c04f7781-be60-4d61-b24e-23f37a7cd7ba" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/router/admin/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/admin/api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/router/amin_router.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/amin_router.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/auth/admin_auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/auth/admin_auth.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,7 +119,7 @@
       <workItem from="1691048304303" duration="8000" />
       <workItem from="1691048322538" duration="2986000" />
       <workItem from="1691051321317" duration="731000" />
-      <workItem from="1691129453609" duration="3830000" />
+      <workItem from="1691129453609" duration="4475000" />
     </task>
     <servers />
   </component>
