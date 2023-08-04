@@ -92,6 +92,18 @@ async def admin_list(db: Session = Depends(get_db),
     return model_
 
 
+async def admin_by_ID(id : int, db: Session = Depends(get_db),
+                      user: dict = Depends(get_current_admin)):
+    db_query = db.query(AdminModel) \
+      .filter(AdminModel.id == id).first()
+
+    if db_query is None:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={"message": "Admin not found"})
+
+    return db_query
+
 async def delete_admin(id: int,
                        db: Session = Depends(get_db),
                        login: dict = Depends(get_current_admin)):

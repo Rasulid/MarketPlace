@@ -4,7 +4,7 @@ from typing import Annotated, List
 from api.router.product_router import product_list, create_product, product_by_id, update_product, delete_product
 from api.schemas.product_schema import ProductSchemaReadV2
 from api.schemas.admin_schema import Admin_Read_Schema
-from api.router.amin_router import register, update_admin, admin_list, delete_admin
+from api.router.amin_router import register, update_admin, admin_list, delete_admin, admin_by_ID
 from api.router.category_router import category_list, category_create, category_update, delete_category, category_by_id
 from api.schemas.category_schema import CategorySchema
 from api.router.colour_router import list_colours, colour_create, colour_update, delete_colour, colour_by_id
@@ -68,6 +68,10 @@ async def update_admin(admin: Annotated[dict, Depends(update_admin)]):
 async def admin_list(admin: Annotated[dict, Depends(admin_list)]):
     return admin
 
+
+@app.get("/api/admin/{id}}", response_model=Admin_Read_Schema, tags=["admin"])
+async def admin_by_id(admin: Annotated[dict, Depends(admin_by_ID)]):
+    return admin
 
 @app.delete("/api/admin/delete/{id}", tags=["admin"])
 async def delete_admin(admin: Annotated[dict, Depends(delete_admin)]):

@@ -5,6 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c04f7781-be60-4d61-b24e-23f37a7cd7ba" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/router/admin/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/admin/api.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/router/amin_router.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/amin_router.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -25,6 +27,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2RxVIWgz8s3Y0x21K42aYUVco6O" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -39,12 +44,14 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;last_opened_file_path&quot;: &quot;/home/rasulabduvaitov/Desktop/MarketPlace&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.editor&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -108,6 +115,12 @@
       <workItem from="1690955530534" duration="77000" />
       <workItem from="1690955615484" duration="141000" />
       <workItem from="1690955765778" duration="2358000" />
+      <workItem from="1690962495384" duration="522000" />
+      <workItem from="1691048214576" duration="81000" />
+      <workItem from="1691048304303" duration="8000" />
+      <workItem from="1691048322538" duration="2986000" />
+      <workItem from="1691051321317" duration="731000" />
+      <workItem from="1691129453609" duration="3830000" />
     </task>
     <servers />
   </component>
