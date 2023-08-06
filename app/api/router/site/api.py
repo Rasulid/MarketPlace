@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Depends
 from typing import Annotated, List
 
+from sqlalchemy.orm import Session
+
 from api.router.product_router import search_product, get_all_products
 from api.schemas.product_schema import ProductSchemaSearch
 from api.router.users_router import user, register, user_update, me
@@ -8,6 +10,9 @@ from api.schemas.users_schemas import UserSchema, CreateUserSchema
 from api.router.order_router import create_order, order_list_by_user_id
 from api.schemas.order_schema import OrderSchemaRead
 from api.auth.admin_auth import login_for_access_token
+from api.db.session import get_db
+from api.models.product_model import CategoryModel
+from api.router.category_router import category_list
 
 app = FastAPI(title="Site")
 
@@ -22,6 +27,14 @@ ________________________________________________________________________________
 Login
 
 """
+
+
+@app.get('/api/category/list', tags=["Category"])
+async def category_by_id(
+                         db: Session = Depends(get_db),
+                         ):
+    query = db.query(CategoryModel).all()
+    return query
 
 
 @app.post("/site/login", tags=["login"])
