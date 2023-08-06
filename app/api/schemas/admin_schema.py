@@ -15,8 +15,8 @@ class Admin_Schema(BaseModel):
     region: str
     is_active: bool = True
     is_staff: bool = True
-    is_superuser: bool = False
-    is_verified: bool = False
+    is_superuser: bool
+    is_verified: bool 
 
 
 
