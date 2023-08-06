@@ -22,6 +22,10 @@ class ProductSchemaSearch(BaseModel):
     price: int
 
 
+    class Config:
+        orm_mode = True
+
+
 class ProductSchema(BaseModel):
     title: str
     description: str

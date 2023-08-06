@@ -1,11 +1,14 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from api.db.session import get_db
-from api.models.product_model import CategoryModel
+from api.models.product_model import CategoryModel, ProductModel
 from api.auth.login import get_current_staff
+from api.schemas.product_schema import ProductSchemaSearch, ProductImageSchema
 
 router = APIRouter(
     tags=["Category"],
@@ -91,3 +94,20 @@ async def delete_category(id: int,
         status_code=status.HTTP_404_NOT_FOUND,
         content="Category not found"
     )
+
+async def category_by_product(id: int, db: Session = Depends(get_db)):
+    result = []
+    query = db.query(ProductModel).filter(ProductModel.category_id == id).all()
+    for x in query:
+        images = [
+            ProductImageSchema(file_name=image.file_name, file_path=image.file_path)
+            for image in x.images
+        ]
+        res = ProductSchemaSearch(
+            title=x.title,
+            images=images,
+            price=x.price,
+        )
+        result.append(res)
+
+    return result

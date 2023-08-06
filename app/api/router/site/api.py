@@ -12,7 +12,7 @@ from api.schemas.order_schema import OrderSchemaRead
 from api.auth.admin_auth import login_for_access_token
 from api.db.session import get_db
 from api.models.product_model import CategoryModel
-from api.router.category_router import category_list
+from api.router.category_router import category_list, category_by_product
 
 app = FastAPI(title="Site")
 
@@ -76,3 +76,7 @@ async def update_user(order: Annotated[dict, Depends(create_order)]):
 async def oder_by_user_id(order: Annotated[dict, Depends(order_list_by_user_id)]):
     return order
 
+
+@app.get('/api/category/by-{id}', response_model=List[ProductSchemaSearch], tags=["Category"])
+async def category_by_id(category: Annotated[dict, Depends(category_by_product)]):
+    return category
