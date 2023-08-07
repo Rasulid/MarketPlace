@@ -104,6 +104,7 @@ async def category_by_product(id: int, db: Session = Depends(get_db)):
             for image in x.images
         ]
         res = ProductSchemaSearch(
+            id=x.id,
             title=x.title,
             images=images,
             price=x.price,

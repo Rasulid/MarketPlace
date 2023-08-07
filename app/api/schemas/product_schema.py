@@ -17,6 +17,7 @@ class ProductImageSchema(BaseModel):
 
 
 class ProductSchemaSearch(BaseModel):
+    id: int
     title: str
     images:List[ProductImageSchema]
     price: int

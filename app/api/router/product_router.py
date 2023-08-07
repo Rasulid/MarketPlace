@@ -449,6 +449,7 @@ async def search_product(title: str, db=Depends(get_db)):
         ]
 
         s = ProductSchemaSearch(
+            id=product.id,
             title=product.title,
             images=images,
             price=product.price
@@ -470,6 +471,7 @@ async def get_all_products(db: Session = Depends(get_db)):
         ]
 
         s = ProductSchemaSearch(
+            id=product.id,
             title=product.title,
             images=images,
             price=product.price
