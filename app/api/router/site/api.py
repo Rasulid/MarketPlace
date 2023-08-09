@@ -1,18 +1,24 @@
 from fastapi import FastAPI, Depends
 from typing import Annotated, List
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
+from starlette import status
+from starlette.responses import JSONResponse
 
 from api.router.product_router import search_product, get_all_products
-from api.schemas.product_schema import ProductSchemaSearch
+from api.schemas.product_schema import ProductSchemaSearch, ProductImageSchema, ProductSchemaReadV2
 from api.router.users_router import user, register, user_update, me
 from api.schemas.users_schemas import UserSchema, CreateUserSchema
 from api.router.order_router import create_order, order_list_by_user_id
 from api.schemas.order_schema import OrderSchemaRead
 from api.auth.admin_auth import login_for_access_token
 from api.db.session import get_db
-from api.models.product_model import CategoryModel
+from api.models.product_model import CategoryModel, ColourModel, ProductModel, ProductImage, ColourProduct, Promocode
 from api.router.category_router import category_list, category_by_product
+from router.colour_router import list_colours
+from schemas.category_schema import CategorySchema
+from schemas.colour_schema import ProductColourSchema
+from schemas.promocode_schema import PromocodeReadSchema
 
 app = FastAPI(title="Site")
 
@@ -31,8 +37,8 @@ Login
 
 @app.get('/api/category/list', tags=["Category"])
 async def category_by_id(
-                         db: Session = Depends(get_db),
-                         ):
+        db: Session = Depends(get_db),
+):
     query = db.query(CategoryModel).all()
     return query
 
@@ -80,3 +86,64 @@ async def oder_by_user_id(order: Annotated[dict, Depends(order_list_by_user_id)]
 @app.get('/api/category/by-{id}', response_model=List[ProductSchemaSearch], tags=["Category"])
 async def category_by_id(category: Annotated[dict, Depends(category_by_product)]):
     return category
+
+
+@app.get('/api/colour/list', tags=["Colour"])
+async def list_colours(db: Session = Depends(get_db)):
+    query = db.query(ColourModel).all()
+    return query
+
+
+@app.get('/api/product/{id}', response_model=List[ProductSchemaReadV2], tags=["Product"])
+async def product_by_id(id: int,
+                        db: Session = Depends(get_db),
+
+                        ):
+    query = (
+        db.query(ProductModel)
+        .join(ProductImage, ProductModel.id == ProductImage.product_id)
+        .join(CategoryModel, ProductModel.category_id == CategoryModel.id)
+        .join(ColourProduct, ProductModel.id == ColourProduct.product_id)
+        .join(Promocode, ProductModel.promocode_id == Promocode.id)
+        .options(joinedload(ProductModel.images))
+        .filter(ProductModel.id == id)
+        .first()
+    )
+
+    if query is None:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content=f"Product {id} not found"
+        )
+
+    images = [
+        ProductImageSchema(file_name=image.file_name, file_path=image.file_path)
+        for image in query.images
+    ]
+
+    query_to_category = db.query(CategoryModel).filter(CategoryModel.id == query.category_id).first()
+
+    colour_data = db.query(ColourProduct).filter(ColourProduct.product_id == query.id).all()
+
+    product_data = ProductSchemaReadV2(
+        id=query.id,
+        title=query.title,
+        description=query.description,
+        category=[CategorySchema(id=query.category_id, title=query_to_category.title)],
+        images=images,
+        owner=query.owner,
+        created_at=query.created_at,
+        count=query.count,
+        procent_sale=query.procent_sale,
+        promocode=[PromocodeReadSchema(id=query.promocode_rel.id,
+                                       name=query.promocode_rel.name,
+                                       procent=query.promocode_rel.procent,
+                                       category=[query.promocode_rel.category_rel])],
+        colour=[ProductColourSchema(id=colour.id, product_id=colour.product_id, colour_id=colour.colour_id)
+                for colour in colour_data],
+        price=query.price,
+        visible=query.visible
+
+    )
+
+    return [product_data]
