@@ -53,7 +53,6 @@ def verify_password(plain_password, hashed_password):
         raise exc.UnknownHashError
 
 
-
 def authenticate_admin(gmail: str, password: str, db):
     try:
         user = db.query(AdminModel).filter(AdminModel.gmail == gmail).first()

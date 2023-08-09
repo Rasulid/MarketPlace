@@ -32,7 +32,7 @@ app.mount('/site', site)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # allow all origins
+    allow_origins=["https://market-place-site.vercel.app/,*"],  # allow all origins
     allow_credentials=True,
     allow_methods=["*"],  # allow all HTTP methods
     allow_headers=["*"],  # allow all headers
