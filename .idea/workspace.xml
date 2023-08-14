@@ -5,8 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c04f7781-be60-4d61-b24e-23f37a7cd7ba" name="Changes" comment="add id row">
+      <change afterPath="$PROJECT_DIR$/app/api/models/charecter.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/router/charecter_router.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/schemas/charecter_schema.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/alembic/env.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/alembic/env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/alembic/versions/0145b4c56bdb_update_product_table.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/alembic/versions/1824b7f5101b_add_new_table_promocode_fk.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/alembic/versions/241c48eab202_add_visible_to_product_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/alembic/versions/287861dcb3eb_modified_user_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/alembic/versions/29a6561b149a_update_product_table.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/alembic/versions/3459edb7f6e9_add_new_row_promocode.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/alembic/versions/361f981a0979_add_data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/alembic/versions/423b49540803_add_all_models_v2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/alembic/versions/4851ac89c66e_add_new_row_to_product.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/alembic/versions/730d6d4766e1_add_all_models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/alembic/versions/8b7358482669_add_new_row_promocode.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/alembic/versions/93c1e561e64d_add_new_table_promocode_fk.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/alembic/versions/d022a3bb0ff2_update_product_table.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/alembic/versions/d0de4392a480_add_new_row_to_order_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/alembic/versions/fac681b22a6b_add_cascade.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/models/product_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/models/product_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/router/admin/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/admin/api.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/router/site/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/router/site/api.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -163,6 +184,9 @@
       <workItem from="1691409069429" duration="989000" />
       <workItem from="1691489023911" duration="53000" />
       <workItem from="1691559013011" duration="1943000" />
+      <workItem from="1691563246115" duration="11000" />
+      <workItem from="1691990451841" duration="2514000" />
+      <workItem from="1691993702595" duration="6389000" />
     </task>
     <task id="LOCAL-00001" summary="category list">
       <option name="closed" value="true" />
@@ -204,7 +228,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/MarketPlace$order_router.coverage" NAME="order_router Coverage Results" MODIFIED="1688209562367" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/api/router" />
-    <SUITE FILE_PATH="coverage/MarketPlace$main.coverage" NAME="main Coverage Results" MODIFIED="1691559408797" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
+    <SUITE FILE_PATH="coverage/MarketPlace$main.coverage" NAME="main Coverage Results" MODIFIED="1691563099061" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
     <SUITE FILE_PATH="coverage/MarketPlace$test.coverage" NAME="test Coverage Results" MODIFIED="1688825398224" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/api/auth" />
   </component>
 </project>

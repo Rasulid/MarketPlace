@@ -12,6 +12,7 @@ from api.router.promocode_router import router as promocode_router
 from fastapi.middleware.cors import CORSMiddleware
 from api.router.admin.api import app as admin
 from api.router.site.api import app as site
+from api.router.charecter_router import router as charecter_router
 
 app = FastAPI()
 
@@ -23,6 +24,7 @@ app.include_router(order_router)
 app.include_router(category_router)
 app.include_router(colour_router)
 app.include_router(users_router)
+app.include_router(charecter_router)
 
 
 app.mount("/super-user", super_user_router)

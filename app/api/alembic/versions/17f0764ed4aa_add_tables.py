@@ -1,8 +1,8 @@
-"""add all models
+"""add tables
 
-Revision ID: 730d6d4766e1
+Revision ID: 17f0764ed4aa
 Revises: 
-Create Date: 2023-07-02 15:32:31.727963
+Create Date: 2023-08-14 10:51:40.470254
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '730d6d4766e1'
+revision = '17f0764ed4aa'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,7 +21,7 @@ def upgrade() -> None:
     op.create_table('admins',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('age', sa.Integer(), nullable=False),
+    sa.Column('born', sa.DateTime(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('phone_number', sa.String(), nullable=False),
     sa.Column('gmail', sa.String(), nullable=False),
@@ -49,7 +49,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('l_name', sa.String(), nullable=False),
-    sa.Column('age', sa.Integer(), nullable=False),
+    sa.Column('born', sa.DateTime(), nullable=True),
     sa.Column('phone_number', sa.String(), nullable=False),
     sa.Column('country', sa.String(), nullable=False),
     sa.Column('region', sa.String(), nullable=False),
@@ -65,6 +65,15 @@ def upgrade() -> None:
     sa.UniqueConstraint('gmail')
     )
     op.create_index(op.f('ix_users_id'), 'users', ['id'], unique=False)
+    op.create_table('promocode',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(), nullable=True),
+    sa.Column('procent', sa.Integer(), nullable=True),
+    sa.Column('category', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['category'], ['category.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_promocode_id'), 'promocode', ['id'], unique=False)
     op.create_table('orders',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('payment_method', sa.String(), nullable=True),
@@ -72,6 +81,8 @@ def upgrade() -> None:
     sa.Column('order_status', sa.String(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('count', sa.Integer(), nullable=True),
+    sa.Column('promocode', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['promocode'], ['promocode.id'], ondelete='SET NULL'),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='SET NULL'),
     sa.PrimaryKeyConstraint('id')
     )
@@ -84,13 +95,53 @@ def upgrade() -> None:
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('count', sa.Integer(), nullable=True),
     sa.Column('procent_sale', sa.Integer(), nullable=True),
-    sa.Column('promocode', sa.String(), nullable=True),
+    sa.Column('promocode_id', sa.Integer(), nullable=True),
     sa.Column('price', sa.Float(), nullable=True),
+    sa.Column('visible', sa.Boolean(), nullable=True),
     sa.ForeignKeyConstraint(['category_id'], ['category.id'], ondelete='SET NULL'),
     sa.ForeignKeyConstraint(['owner'], ['admins.id'], ondelete='SET NULL'),
+    sa.ForeignKeyConstraint(['promocode_id'], ['promocode.id'], ondelete='SET NULL'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_products_id'), 'products', ['id'], unique=False)
+    op.create_table('colour_product',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('product_id', sa.Integer(), nullable=True),
+    sa.Column('colour_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['colour_id'], ['colour.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['product_id'], ['products.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_colour_product_id'), 'colour_product', ['id'], unique=False)
+    op.create_table('comp_char',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('product_id', sa.Integer(), nullable=True),
+    sa.Column('colour', sa.String(), nullable=True),
+    sa.Column('processor', sa.String(), nullable=True),
+    sa.Column('memory', sa.String(), nullable=True),
+    sa.Column('display', sa.String(), nullable=True),
+    sa.Column('memory_type', sa.String(), nullable=True),
+    sa.Column('RAM', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['product_id'], ['products.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_comp_char_id'), 'comp_char', ['id'], unique=False)
+    op.create_table('mobile_char',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('product_id', sa.Integer(), nullable=True),
+    sa.Column('colour', sa.String(), nullable=True),
+    sa.Column('processor', sa.String(), nullable=True),
+    sa.Column('memory', sa.String(), nullable=True),
+    sa.Column('charger', sa.String(), nullable=True),
+    sa.Column('front_cam', sa.String(), nullable=True),
+    sa.Column('main_cam', sa.String(), nullable=True),
+    sa.Column('hrz', sa.String(), nullable=True),
+    sa.Column('display', sa.String(), nullable=True),
+    sa.Column('type_display', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['product_id'], ['products.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_mobile_char_id'), 'mobile_char', ['id'], unique=False)
     op.create_table('ordered_products',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('product_id', sa.Integer(), nullable=True),
@@ -114,9 +165,17 @@ def downgrade() -> None:
     # ### commands auto generated by Alembic - please adjust! ###
     op.drop_table('product_images')
     op.drop_table('ordered_products')
+    op.drop_index(op.f('ix_mobile_char_id'), table_name='mobile_char')
+    op.drop_table('mobile_char')
+    op.drop_index(op.f('ix_comp_char_id'), table_name='comp_char')
+    op.drop_table('comp_char')
+    op.drop_index(op.f('ix_colour_product_id'), table_name='colour_product')
+    op.drop_table('colour_product')
     op.drop_index(op.f('ix_products_id'), table_name='products')
     op.drop_table('products')
     op.drop_table('orders')
+    op.drop_index(op.f('ix_promocode_id'), table_name='promocode')
+    op.drop_table('promocode')
     op.drop_index(op.f('ix_users_id'), table_name='users')
     op.drop_table('users')
     op.drop_index(op.f('ix_colour_id'), table_name='colour')

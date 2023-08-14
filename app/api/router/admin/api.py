@@ -15,6 +15,11 @@ from api.schemas.promocode_schema import PromocodeReadSchema
 from api.router.users_router import lists_users, list_users, delete_user, update_user_by_id, me
 from api.schemas.users_schemas import UserSchema, UserSchemaRead, CreateUserSchema
 from api.auth.admin_auth import login_for_access_token, refresh_token
+from api.router.charecter_router import create_char_mobile, update_char_mobile, get_char_mobile, get_all_mobile_char, \
+    dlete_mobile_char, create_character_comp, get_character_comp, update_character_comp, delete_comp_char, \
+    get_all_comp_char
+from api.schemas.charecter_schema import MobileCharSchemaRead, MobileCharSchemaReadV2, CompCharSchemaRead, \
+    CompCharSchemaReadV2
 
 app = FastAPI(title="Admin")
 
@@ -242,3 +247,63 @@ async def user_delete(users: Annotated[dict, Depends(delete_user)]):
 @app.get("/api/users/me")
 async def user_me(users: Annotated[dict, Depends(me)]):
     return users
+
+"""
+________________________________________________________________________________________________________________________
+Charecter mobile 
+
+"""
+
+@app.post("/app/char-mobile/create",response_model=MobileCharSchemaRead, tags=["Mobile-Char"])
+async def create_char_mobile(char_mobile: Annotated[dict, Depends(create_char_mobile)]):
+    return char_mobile
+
+@app.put("/app/char-mobile/update/{char_id}",response_model=MobileCharSchemaRead, tags=["Mobile-Char"])
+async def update_char_mobile(char_mobile: Annotated[dict, Depends(update_char_mobile)]):
+    return char_mobile
+
+
+@app.get("/app/char-mobile/{id}",response_model=MobileCharSchemaRead, tags=["Mobile-Char"])
+async def get_char_mobile(char_mobile: Annotated[dict, Depends(get_char_mobile)]):
+    return char_mobile
+
+
+@app.get("/app/mobile-char/all", response_model=List[MobileCharSchemaReadV2], tags=["Mobile-Char"])
+async def list_char_mobile(char_mobile: Annotated[dict, Depends(get_all_mobile_char)]):
+    return char_mobile
+
+
+@app.delete("/app/mobile-char/delete/{id}", tags=["Mobile-Char"])
+async def delete_char_mobile(char_mobile: Annotated[dict, Depends(dlete_mobile_char)]):
+    return char_mobile
+
+
+"""
+________________________________________________________________________________________________________________________
+Charecter comp 
+
+"""
+
+@app.post('/app/char-comp/create', response_model=CompCharSchemaRead, tags=["Comp-Char"])
+async def create_char_comp(char_comp: Annotated[dict, Depends(create_character_comp)]):
+    return char_comp
+
+
+@app.get('/app/char-comp/{id}', response_model=CompCharSchemaRead, tags=["Comp-Char"])
+async def get_char_comp(char_comp: Annotated[dict, Depends(get_character_comp)]):
+    return char_comp
+
+
+@app.put('/app/char-comp/update/{char_id}', response_model=CompCharSchemaRead, tags=["Comp-Char"])
+async def update_char_comp(char_comp: Annotated[dict, Depends(update_character_comp)]):
+    return char_comp
+
+
+@app.delete("/app/comp-char/delete/{id}", tags=["Comp-Char"])
+async def delete_char_comp(char_comp: Annotated[dict, Depends(delete_comp_char)]):
+    return char_comp
+
+
+@app.get("/app/comp-char/all", response_model=List[CompCharSchemaReadV2], tags=["Comp-Char"])
+async def list_char_comp(char_comp: Annotated[dict, Depends(get_all_comp_char)]):
+    return char_comp

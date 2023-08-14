@@ -2,6 +2,7 @@ from sqlalchemy import Integer, String, Column, ForeignKey, DateTime, Float, Boo
 from sqlalchemy.orm import relationship
 
 from api.db.DataBasse import Base
+from .charecter import CompChar, MobileChar
 
 
 class Promocode(Base):
@@ -56,6 +57,8 @@ class ProductModel(Base):
     category_rel = relationship("CategoryModel", back_populates="products_rel")
     colour_products_rel = relationship("ColourProduct", backref="product")
     promocode_rel = relationship("Promocode", back_populates="product_rel")
+    mobile_char = relationship("MobileChar", back_populates="product_rel")
+    comp_char = relationship("CompChar", back_populates="product_rel")
 
 
 class ProductImage(Base):

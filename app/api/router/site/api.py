@@ -15,10 +15,10 @@ from api.auth.admin_auth import login_for_access_token
 from api.db.session import get_db
 from api.models.product_model import CategoryModel, ColourModel, ProductModel, ProductImage, ColourProduct, Promocode
 from api.router.category_router import category_list, category_by_product
-from router.colour_router import list_colours
-from schemas.category_schema import CategorySchema
-from schemas.colour_schema import ProductColourSchema
-from schemas.promocode_schema import PromocodeReadSchema
+from api.router.colour_router import list_colours
+from api.schemas.category_schema import CategorySchema
+from api.schemas.colour_schema import ProductColourSchema
+from api.schemas.promocode_schema import PromocodeReadSchema
 
 app = FastAPI(title="Site")
 
